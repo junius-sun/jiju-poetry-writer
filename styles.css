@@ -1,0 +1,1476 @@
+/* ==========================================================================
+   古诗集句工程 - 国风水墨美学视觉样式表 (Guofeng Aesthetic CSS)
+   ========================================================================== */
+
+:root {
+  /* 国风传统调色盘 */
+  --bg-xuan: #F6F3EB;          /* 宣纸淡黄 */
+  --bg-card: #FAF8F2;          /* 白宣 */
+  --color-ink: #1F242D;         /* 焦墨 */
+  --color-ink-light: #4A5160;   /* 浓墨 */
+  --color-ink-muted: #8C94A0;   /* 淡墨 */
+  
+  --color-vermilion: #C83C23;   /* 朱砂红 (印章/强调) */
+  --color-bamboo: #2C4C3B;      /* 竹青 (主调/成功) */
+  --color-gold: #C69214;        /* 鎏金 (勋章/契合) */
+  --color-jade: #3D6B58;        /* 翡翠 */
+  --color-slate: #3B4B5B;       /* 黛蓝 */
+  
+  --tone-ping: #2B547E;         /* 平声 (宝蓝) */
+  --tone-ze: #A63A2B;           /* 仄声 (朱红) */
+
+  /* 字体设置 */
+  --font-serif: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+  --font-calligraphy: 'Ma Shan Zheng', 'Long Cang', 'Noto Serif SC', cursive, serif;
+
+  /* 阴影与边框 */
+  --border-paper: 1px solid #E2DCD0;
+  --shadow-soft: 0 4px 20px rgba(31, 36, 45, 0.06);
+  --shadow-hover: 0 8px 30px rgba(31, 36, 45, 0.12);
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+}
+
+/* 基础重置 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-xuan);
+  color: var(--color-ink);
+  font-family: var(--font-serif);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-image: radial-gradient(#E8E3D8 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ==================== 1. Header 头部 ==================== */
+.app-header {
+  background: rgba(250, 248, 242, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: var(--border-paper);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-inner {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo-stamp {
+  width: 44px;
+  height: 44px;
+  background-color: var(--color-vermilion);
+  color: #FFF;
+  font-family: var(--font-calligraphy);
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(200, 60, 35, 0.3);
+  letter-spacing: 1px;
+}
+
+.title-group h1 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.badge-tag {
+  font-size: 0.75rem;
+  font-weight: 400;
+  background-color: rgba(44, 76, 59, 0.1);
+  color: var(--color-bamboo);
+  padding: 2px 8px;
+  border-radius: 20px;
+  border: 1px solid rgba(44, 76, 59, 0.2);
+}
+
+.subtitle {
+  font-size: 0.82rem;
+  color: var(--color-ink-muted);
+}
+
+/* 导航 Tab */
+.nav-tabs {
+  display: flex;
+  gap: 8px;
+  background-color: rgba(226, 220, 208, 0.4);
+  padding: 4px;
+  border-radius: 30px;
+}
+
+.nav-tab {
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  color: var(--color-ink-light);
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-tab:hover {
+  color: var(--color-bamboo);
+}
+
+.nav-tab.active {
+  background-color: #FFF;
+  color: var(--color-bamboo);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* ==================== 2. 主区布局 ==================== */
+.app-main {
+  flex: 1;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+  animation: fadeIn 0.35s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==================== 3. 自由集句模块 (Assembly) ==================== */
+.assembly-layout {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.creative-panel {
+  background: var(--bg-card);
+  border: var(--border-paper);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-soft);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 18px;
+  margin-bottom: 20px;
+  border-bottom: 1px dashed #E2DCD0;
+}
+
+.length-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.length-selector .label {
+  font-size: 0.9rem;
+  color: var(--color-ink-muted);
+}
+
+.btn-toggle {
+  border: 1px solid #D6CFBF;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-toggle.active {
+  background-color: var(--color-bamboo);
+  color: #FFF;
+  border-color: var(--color-bamboo);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  border: none;
+  font-family: inherit;
+  font-size: 0.88rem;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-primary {
+  background-color: var(--color-bamboo);
+  color: #FFF;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-jade);
+  box-shadow: 0 4px 12px rgba(44, 76, 59, 0.25);
+}
+
+.btn-secondary {
+  background-color: rgba(200, 60, 35, 0.1);
+  color: var(--color-vermilion);
+  border: 1px solid rgba(200, 60, 35, 0.3);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-vermilion);
+  color: #FFF;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid #D6CFBF;
+  color: var(--color-ink-light);
+}
+
+.btn-outline:hover {
+  border-color: var(--color-ink);
+  color: var(--color-ink);
+}
+
+.btn-block {
+  width: 100%;
+  justify-content: center;
+}
+
+.btn-sm {
+  padding: 5px 12px;
+  font-size: 0.8rem;
+}
+
+/* 飞花闯关进行中横幅 */
+.active-level-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: linear-gradient(135deg, rgba(200, 60, 35, 0.08), rgba(198, 146, 20, 0.08));
+  border: 1px solid rgba(200, 60, 35, 0.25);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+
+.active-level-banner .banner-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-vermilion);
+  margin-bottom: 2px;
+}
+
+.active-level-banner .banner-goal {
+  font-size: 0.82rem;
+  color: var(--color-ink-light);
+}
+
+/* 4 句槽位 (Quatrain Slots) */
+.quatrain-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.line-slot {
+  background-color: #FFF;
+  border: 1px solid #E8E2D5;
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.line-slot.active-target {
+  border-color: var(--color-bamboo);
+  box-shadow: 0 0 0 2px rgba(44, 76, 59, 0.15);
+  background-color: rgba(235, 242, 234, 0.3);
+}
+
+.line-slot.filled {
+  border-color: #D4CDBC;
+}
+
+.slot-number {
+  font-size: 0.8rem;
+  color: var(--color-ink-muted);
+  width: 110px;
+  flex-shrink: 0;
+}
+
+.slot-main {
+  flex: 1;
+}
+
+.slot-text-placeholder {
+  font-size: 0.92rem;
+  color: var(--color-ink-muted);
+  font-style: italic;
+}
+
+.slot-content-display {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.verse-text {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--color-ink);
+}
+
+.verse-meta {
+  font-size: 0.8rem;
+  color: var(--color-ink-muted);
+  display: flex;
+  gap: 12px;
+}
+
+.verse-author {
+  color: var(--color-bamboo);
+  font-weight: 600;
+}
+
+.slot-badge {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background-color: #F0EAE0;
+  color: var(--color-ink-light);
+  flex-shrink: 0;
+}
+
+.slot-badge.rhyme {
+  background-color: rgba(198, 146, 20, 0.15);
+  color: #8C6200;
+  border: 1px solid rgba(198, 146, 20, 0.3);
+}
+
+.btn-remove-line {
+  border: none;
+  background: transparent;
+  color: var(--color-ink-muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.btn-remove-line:hover {
+  color: var(--color-vermilion);
+  background-color: rgba(200, 60, 35, 0.08);
+}
+
+/* 格律分析卡片 (Matrix Card) */
+.metrical-matrix-card {
+  background-color: rgba(246, 243, 235, 0.7);
+  border: 1px solid #E5DFD3;
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+}
+
+.metrical-matrix-card h3 {
+  font-size: 0.95rem;
+  color: var(--color-ink-light);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.matrix-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.matrix-empty {
+  font-size: 0.85rem;
+  color: var(--color-ink-muted);
+  text-align: center;
+  padding: 16px;
+}
+
+.matrix-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.85rem;
+}
+
+.row-label {
+  width: 50px;
+  color: var(--color-ink-muted);
+}
+
+.tone-pills {
+  display: flex;
+  gap: 6px;
+}
+
+.tone-pill {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #FFF;
+}
+
+.tone-pill.ping {
+  background-color: var(--tone-ping);
+}
+
+.tone-pill.ze {
+  background-color: var(--tone-ze);
+}
+
+.tone-pill.flexible {
+  background-color: #8C94A0;
+}
+
+/* 评价结果框 */
+.evaluation-box {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed #DCD5C6;
+}
+
+.eval-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.eval-rank {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-vermilion);
+}
+
+.eval-score {
+  font-size: 0.9rem;
+  color: var(--color-bamboo);
+  font-weight: 600;
+}
+
+.eval-reports {
+  list-style: none;
+  font-size: 0.83rem;
+  color: var(--color-ink-light);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ==================== 4. 智能 5 句推选与搜索抽屉 (Candidate Drawer & Recommendations) ==================== */
+.candidate-drawer {
+  background: var(--bg-card);
+  border: var(--border-paper);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-soft);
+  height: fit-content;
+  max-height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 两列布局：左=AI 推荐名句池，右=搜索名句库（各自独立滚动，互不挤压） */
+.drawer-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: 14px;
+  flex: 1;
+  min-height: 0;
+}
+
+.drawer-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background-color: rgba(246, 243, 235, 0.4);
+  border: 1px dashed #E2DCD0;
+  border-radius: var(--radius-md);
+  padding: 12px;
+}
+
+.col-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-bamboo);
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+/* 左列空状态（未选首句时显示） */
+.smart-placeholder {
+  text-align: center;
+  padding: 18px 12px;
+  color: var(--color-ink-muted);
+  font-size: 0.82rem;
+  line-height: 1.7;
+}
+
+@media (max-width: 1200px) {
+  .drawer-columns {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+}
+
+.drawer-header {
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.drawer-header h2 {
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.count-pill {
+  font-size: 0.78rem;
+  background-color: rgba(44, 76, 59, 0.1);
+  color: var(--color-bamboo);
+  padding: 2px 10px;
+  border-radius: 12px;
+}
+
+.drawer-desc {
+  font-size: 0.8rem;
+  color: var(--color-ink-muted);
+}
+
+/* AI 智能推选区 (在左列内独立滚动，不再受 210px 上限约束) */
+.smart-recommendation-section {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.section-badge-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-bamboo);
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px dashed rgba(44, 76, 59, 0.2);
+}
+
+.recommend-tip {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--color-gold);
+  background-color: rgba(198, 146, 20, 0.12);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+/* 推选区标题右侧：提示 + 批次标识 + 换一批按钮 */
+.section-badge-title {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.smart-title-text {
+  flex-shrink: 0;
+}
+
+.smart-title-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.smart-batch-label {
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--color-ink-muted);
+  white-space: nowrap;
+}
+
+.btn-swap-smart {
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  background-color: #FFF;
+  white-space: nowrap;
+}
+
+.btn-swap-smart:not(:disabled):hover {
+  border-color: var(--color-bamboo);
+  color: var(--color-bamboo);
+  background-color: #F2F8F1;
+}
+
+.btn-swap-smart:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.smart-five-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.smart-card {
+  background-color: #FFF;
+  border: 1px solid #D8E4D5;
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.22s ease;
+}
+
+.smart-card:hover {
+  background-color: #F2F8F1;
+  border-color: var(--color-bamboo);
+  transform: translateX(3px);
+  box-shadow: 0 3px 10px rgba(44, 76, 59, 0.12);
+}
+
+.smart-card-text {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--color-ink);
+  margin-bottom: 2px;
+}
+
+.smart-card-meta {
+  font-size: 0.74rem;
+  color: var(--color-ink-muted);
+  display: flex;
+  gap: 8px;
+}
+
+.smart-card-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.smart-score-pill {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--color-vermilion);
+  background-color: rgba(200, 60, 35, 0.08);
+  padding: 1px 6px;
+  border-radius: 8px;
+}
+
+.smart-action-text {
+  font-size: 0.72rem;
+  color: var(--color-bamboo);
+  font-weight: 600;
+}
+
+/* 双搜索框 (固定不挤压，始终清晰可见) */
+.dual-search-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.search-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-ink-light);
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.search-input-wrapper input {
+  flex: 1;
+  padding: 8px 36px 8px 14px;
+  border: 1px solid #D8D1C2;
+  border-radius: 20px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  background-color: #FFF;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.search-input-wrapper input:focus {
+  border-color: var(--color-bamboo);
+}
+
+.btn-search {
+  border: none;
+  background-color: var(--color-bamboo);
+  color: #FFF;
+  font-family: inherit;
+  font-size: 0.82rem;
+  padding: 7px 16px;
+  border-radius: 18px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.btn-search:hover {
+  background-color: var(--color-jade);
+  box-shadow: 0 2px 8px rgba(44, 76, 59, 0.25);
+}
+
+.btn-clear {
+  position: absolute;
+  right: 70px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  font-size: 1.1rem;
+  color: var(--color-ink-muted);
+  cursor: pointer;
+}
+
+/* 平时未搜索占位提示 */
+.search-placeholder {
+  text-align: center;
+  padding: 24px 16px;
+  color: var(--color-ink-muted);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  background-color: rgba(246, 243, 235, 0.4);
+  border: 1px dashed #E2DCD0;
+  border-radius: var(--radius-md);
+}
+
+.search-placeholder b {
+  color: var(--color-vermilion);
+}
+
+.search-hint-error {
+  background-color: rgba(200, 60, 35, 0.08);
+  border: 1px solid rgba(200, 60, 35, 0.2);
+  color: var(--color-vermilion);
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* 候选列表与原诗分组卡片 (独立弹性滚动区域) */
+.candidate-list {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 4px;
+  flex: 1;
+  min-height: 140px;
+}
+
+/* 有搜索结果时与上方搜索框用虚线分隔，与推荐区彻底分区 */
+.candidate-list:not(:empty) {
+  border-top: 1px dashed #E2DCD0;
+  padding-top: 12px;
+}
+
+.candidate-card {
+  background-color: #FFF;
+  border: 1px solid #E8E2D5;
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.candidate-card:hover {
+  border-color: var(--color-bamboo);
+  transform: translateX(4px);
+  box-shadow: 0 4px 14px rgba(44, 76, 59, 0.12);
+}
+
+.cand-text {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+
+.cand-meta {
+  font-size: 0.78rem;
+  color: var(--color-ink-muted);
+  display: flex;
+  gap: 8px;
+}
+
+.cand-author {
+  color: var(--color-bamboo);
+}
+
+.cand-score-badge {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.score-num {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-gold);
+  display: block;
+}
+
+.score-label {
+  font-size: 0.7rem;
+  color: var(--color-ink-muted);
+}
+
+/* 诗人原诗折叠/展开卡片 */
+.poet-poem-card {
+  background-color: #FFF;
+  border: 1px solid #E5DFD3;
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: var(--shadow-soft);
+  transition: all 0.25s ease;
+}
+
+.poet-poem-card:hover {
+  border-color: var(--color-bamboo);
+}
+
+.poem-title-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  padding: 2px 0;
+}
+
+.poem-title-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.poem-title-text {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-bamboo);
+}
+
+.poem-author-tag {
+  font-size: 0.78rem;
+  background-color: rgba(200, 60, 35, 0.08);
+  color: var(--color-vermilion);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.poem-toggle-badge {
+  font-size: 0.78rem;
+  color: var(--color-bamboo);
+  background-color: rgba(44, 76, 59, 0.08);
+  padding: 3px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(44, 76, 59, 0.2);
+  transition: all 0.2s ease;
+}
+
+.poem-title-header:hover .poem-toggle-badge {
+  background-color: var(--color-bamboo);
+  color: #FFF;
+}
+
+/* 折叠/展开 动画 */
+.poem-lines-group {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 1px dashed #E5DFD3;
+  padding-top: 8px;
+  animation: fadeIn 0.25s ease;
+}
+
+.poet-poem-card.expanded .poem-lines-group {
+  display: flex;
+}
+
+.poem-line-btn {
+  border: 1px solid #E8E2D5;
+  background-color: rgba(246, 243, 235, 0.4);
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.poem-line-btn:hover {
+  background-color: rgba(44, 76, 59, 0.08);
+  border-color: var(--color-bamboo);
+}
+
+.poem-line-text {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.poem-line-action {
+  font-size: 0.75rem;
+  color: var(--color-bamboo);
+  font-weight: 600;
+}
+
+/* ==================== 5. 飞花闯关模块 (Puzzle) ==================== */
+.puzzle-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.puzzle-banner {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.puzzle-banner h2 {
+  font-size: 1.8rem;
+  color: var(--color-ink);
+  margin-bottom: 6px;
+}
+
+.puzzle-banner p {
+  color: var(--color-ink-muted);
+}
+
+.puzzle-levels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.level-card {
+  background: var(--bg-card);
+  border: var(--border-paper);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-soft);
+  transition: all 0.25s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.level-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--color-bamboo);
+}
+
+.level-badge {
+  font-size: 0.75rem;
+  background-color: rgba(200, 60, 35, 0.1);
+  color: var(--color-vermilion);
+  padding: 2px 10px;
+  border-radius: 12px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.level-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.level-desc {
+  font-size: 0.85rem;
+  color: var(--color-ink-light);
+  margin-bottom: 16px;
+}
+
+.level-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px dashed #E2DCD0;
+  padding-top: 12px;
+  font-size: 0.8rem;
+  color: var(--color-ink-muted);
+}
+
+/* ==================== 6. 水墨诗牌导出 (Card Generator) ==================== */
+.card-generator-layout {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 30px;
+  align-items: start;
+}
+
+.card-controls {
+  background: var(--bg-card);
+  border: var(--border-paper);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card-controls h2 {
+  font-size: 1.1rem;
+  border-bottom: 1px dashed #E2DCD0;
+  padding-bottom: 12px;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.control-group label {
+  font-size: 0.88rem;
+  color: var(--color-ink-light);
+  font-weight: 600;
+}
+
+.control-group input[type="text"] {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #D6CFBF;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.theme-picker, .direction-picker {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.theme-btn, .dir-btn {
+  border: 1px solid #D6CFBF;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-btn.active, .dir-btn.active {
+  box-shadow: 0 0 0 2px var(--color-bamboo);
+  font-weight: 600;
+}
+
+.card-preview-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* 宣纸极简国风诗牌 */
+.xuan-paper-card {
+  width: 440px;
+  min-height: 580px;
+  background-color: var(--bg-xuan);
+  border: 12px solid #E6DFC8;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+  position: relative;
+  padding: 40px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.xuan-paper-card.theme-bamboo {
+  background-color: #EBF2EA;
+  border-color: #C8D8C5;
+  color: #1C3A27;
+}
+
+.xuan-paper-card.theme-ink {
+  background-color: #1A1F2C;
+  border-color: #2D3548;
+  color: #F5F2E9;
+}
+
+.xuan-paper-card.theme-red {
+  background-color: #2C1819;
+  border-color: #4A2628;
+  color: #E6C280;
+}
+
+/* 竖排排版 */
+.xuan-paper-card.vertical .card-inner {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  min-height: 480px;
+}
+
+.xuan-paper-card.vertical .card-header-vertical {
+  writing-mode: vertical-rl;
+  display: flex;
+  gap: 16px;
+  border-left: 1px solid rgba(0,0,0,0.1);
+  padding-left: 16px;
+}
+
+.xuan-paper-card.vertical .card-poem-title {
+  font-family: var(--font-calligraphy);
+  font-size: 1.8rem;
+  letter-spacing: 6px;
+}
+
+.xuan-paper-card.vertical .card-poem-subtitle {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+.xuan-paper-card.vertical .card-poem-body {
+  writing-mode: vertical-rl;
+  display: flex;
+  gap: 24px;
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  letter-spacing: 8px;
+  line-height: 2.2;
+}
+
+.card-line-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card-line-meta {
+  font-size: 0.7rem;
+  opacity: 0.6;
+  margin-top: 10px;
+  writing-mode: horizontal-tb;
+}
+
+/* 朱红印章 */
+.stamp-seal {
+  width: 50px;
+  height: 50px;
+  border: 2px solid var(--color-vermilion);
+  color: var(--color-vermilion);
+  font-family: var(--font-calligraphy);
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.2;
+  border-radius: 4px;
+  box-shadow: inset 0 0 4px rgba(200, 60, 35, 0.2);
+}
+
+/* ==================== 7. 平水韵介绍模块 (Pingshui Guide) ==================== */
+.pingshui-guide-layout {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.pingshui-banner {
+  background: var(--bg-card);
+  border: var(--border-paper);
+  border-radius: var(--radius-lg);
+  padding: 24px 30px;
+  box-shadow: var(--shadow-soft);
+  text-align: center;
+}
+
+.pingshui-banner h2 {
+  font-size: 1.5rem;
+  color: var(--color-ink);
+  margin-bottom: 6px;
+}
+
+.pingshui-banner p {
+  color: var(--color-ink-muted);
+  font-size: 0.92rem;
+}
+
+.pingshui-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.pingshui-card {
+  background: var(--bg-card);
+  border: var(--border-paper);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pingshui-card.highlight-card {
+  border-color: rgba(198, 146, 20, 0.4);
+  background-color: #FAF6ED;
+}
+
+.card-icon {
+  font-size: 1.8rem;
+}
+
+.pingshui-card h3 {
+  font-size: 1.15rem;
+  color: var(--color-ink);
+}
+
+.pingshui-card p {
+  font-size: 0.88rem;
+  color: var(--color-ink-light);
+  line-height: 1.7;
+}
+
+.rushneg-examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 6px 0;
+}
+
+.rushneg-tag {
+  font-size: 0.85rem;
+  font-weight: 700;
+  background-color: rgba(166, 58, 43, 0.12);
+  color: var(--tone-ze);
+  padding: 3px 9px;
+  border-radius: 6px;
+  border: 1px solid rgba(166, 58, 43, 0.25);
+}
+
+.card-subnote {
+  font-size: 0.78rem !important;
+  color: var(--color-ink-muted) !important;
+}
+
+.rule-list {
+  list-style: none;
+  font-size: 0.86rem;
+  color: var(--color-ink-light);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 韵部表格与 Tab 切换 */
+.rhyme-table-section {
+  background: var(--bg-card);
+  border: var(--border-paper);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-soft);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.section-title h3 {
+  font-size: 1.2rem;
+  color: var(--color-ink);
+}
+
+.sub-tip {
+  font-size: 0.8rem;
+  color: var(--color-ink-muted);
+}
+
+.rhyme-category-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.rhyme-cat-btn {
+  border: 1px solid #D6CFBF;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.88rem;
+  padding: 8px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rhyme-cat-btn.active {
+  background-color: var(--color-bamboo);
+  color: #FFF;
+  border-color: var(--color-bamboo);
+}
+
+.rhyme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+}
+
+.rhyme-item-card {
+  background-color: #FFF;
+  border: 1px solid #E8E2D5;
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rhyme-name {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-bamboo);
+}
+
+.rhyme-words {
+  font-size: 0.88rem;
+  color: var(--color-ink);
+  letter-spacing: 2px;
+}
+
+.rhyme-example {
+  font-size: 0.78rem;
+  color: var(--color-ink-muted);
+  font-style: italic;
+}
+
+/* 通用隐藏样式 */
+.hidden {
+  display: none !important;
+}
+
+/* 页脚 */
+.app-footer {
+  text-align: center;
+  padding: 24px;
+  font-size: 0.8rem;
+  color: var(--color-ink-muted);
+  border-top: var(--border-paper);
+  margin-top: 40px;
+}
+
+/* 响应式适配 */
+@media (max-width: 900px) {
+  .assembly-layout, .card-generator-layout {
+    grid-template-columns: 1fr;
+  }
+  .header-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

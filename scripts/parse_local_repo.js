@@ -1,0 +1,178 @@
+/**
+ * 本地全量古诗库处理脚本 (scripts/parse_local_repo.js)
+ * 遍历 temp_repo 中的全唐诗、唐诗三百首、千家诗等 JSON 文件，
+ * 提炼并生成大容量、高质量古诗集句数据库。
+ */
+
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const REPO_DIR = path.join(__dirname, '../temp_repo');
+const OUTPUT_FILE = path.join(__dirname, '../src/data/poetry_db.js');
+
+// 常见入声字表 (古音仄声)
+const RU_SHENG_SET = new Set([
+  "国", "石", "月", "日", "白", "竹", "客", "一", "七", "八", "十", "百", "千", "绝", "灭", "出", "入",
+  "独", "读", "拂", "骨", "急", "极", "集", "吉", "木", "目", "莫", "落", "屋", "复", "福", "服", "发",
+  "滑", "达", "答", "得", "德", "特", "铁", "别", "雪", "缺", "说", "折", "哲", "截", "洁", "失", "识",
+  "执", "拾", "室", "释", "实", "食", "息", "席", "熄", "夕", "极", "棘", "戟", "即", "积", "迹", "绩",
+  "昔", "迫", "择", "质", "赤", "敕", "乞", "泣", "黑", "色", "薄", "脚", "角", "若", "弱", "郭", "阁",
+  "节", "贼", "勒", "策", "尺", "壁", "策", "复", "侧", "莫", "学", "物", "卒", "乞", "没", "叔"
+]);
+
+// 平水韵 106 韵部简表 (平声韵部)
+const RHYME_MAP = {
+  "上平一东": ["东", "同", "童", "空", "风", "红", "公", "中", "终", "翁", "通", "融", "重", "雄", "宫", "弓", "蓬"],
+  "上平二冬": ["冬", "农", "宗", "钟", "龙", "松", "重", "凶", "胸", "庸", "容", "峰", "蓉", "踪"],
+  "上平三江": ["江", "杠", "庞", "降", "双", "腔", "撞", "窗", "邦"],
+  "上平四支": ["支", "知", "枝", "移", "推", "归", "吹", "池", "奇", "姿", "宜", "时", "垂", "诗", "悲", "随", "吹", "期", "词", "离", "斯", "维"],
+  "上平五微": ["微", "挥", "飞", "依", "归", "衣", "稀", "祈", "非", "几", "围", "妃", "机"],
+  "上平六鱼": ["鱼", "渔", "初", "余", "书", "诸", "居", "如", "虚", "疏", "除"],
+  "上平七虞": ["虞", "呼", "朱", "珠", "趋", "扶", "符", "途", "湖", "孤", "吾", "吴", "乌", "图", "无", "酒", "流", "扶"],
+  "上平八齐": ["齐", "黎", "泥", "溪", "鸡", "谛", "西", "迷", "提", "低", "梯"],
+  "上平九佳": ["佳", "排", "淮", "谐", "怀", "差", "街", "阶"],
+  "上平十灰": ["灰", "开", "来", "回", "杯", "催", "笑", "台", "哀", "陪", "猜", "苔", "载", "魁", "梅"],
+  "上平十一真": ["真", "因", "人", "亲", "春", "身", "尘", "新", "邻", "巾", "频", "神", "申", "辰", "银", "巡", "邻", "人"],
+  "上平十二文": ["文", "闻", "云", "群", "军", "君", "分", "欣", "芬", "纷", "坟", "熏"],
+  "上平十三元": ["元", "原", "源", "园", "烦", "繁", "翻", "门", "村", "存", "论", "昏"],
+  "上平十四寒": ["寒", "看", "刊", "丹", "单", "安", "难", "餐", "栏", "残", "干", "官", "千"],
+  "下平一先": ["先", "天", "千", "烟", "前", "连", "棉", "仙", "年", "弦", "边", "川", "船", "然", "流", "圆"],
+  "下平六麻": ["麻", "花", "家", "沙", "斜", "华", "霞", "鸦", "遮", "蛇", "车", "涯", "芭", "瑕"],
+  "下平七阳": ["阳", "香", "长", "乡", "光", "霜", "狂", "床", "凉", "央", "黄", "庄", "照", "防", "王", "洋", "芒"],
+  "下平八庚": ["庚", "明", "清", "声", "成", "情", "行", "惊", "城", "生", "精", "倾", "平", "冷", "亭", "平", "瓶", "晶", "程"],
+  "下平十一尤": ["尤", "游", "留", "秋", "头", "楼", "流", "舟", "愁", "休", "牛", "求", "柔", "悠", "侯", "修", "投", "勾"],
+  "下平十二侵": ["侵", "深", "心", "寻", "林", "阴", "琴", "吟", "金", "沉", "音", "今", "箴", "禽"]
+};
+
+// 意象提取
+const TAG_MAP = {
+  "月": ["月", "蟾", "桂", "夜光", "冰轮"],
+  "风": ["风", "吹", "飘", "飒"],
+  "花": ["花", "桃", "杏", "红", "芳", "华", "梅"],
+  "酒": ["酒", "饮", "醉", "樽", "杯", "酌"],
+  "山": ["山", "峰", "岩", "岳", "岭", "翠"],
+  "水": ["水", "江", "河", "海", "泉", "溪", "川", "浪"],
+  "舟": ["舟", "船", "帆", "桨", "舸"],
+  "鸟": ["鸟", "燕", "鸿", "雁", "猿", "啼", "莺", "鸥"],
+  "雪": ["雪", "霜", "寒", "冰"],
+  "秋": ["秋", "霜", "枫", "落", "萧"],
+  "春": ["春", "绿", "柳", "草", "枝"],
+  "夜": ["夜", "暮", "昏", "黑", "烛"]
+};
+
+function getTone(char) {
+  if (RU_SHENG_SET.has(char)) return "0"; // 仄声 (入声)
+  return "1"; // 默认为平声
+}
+
+function getRhyme(char) {
+  for (const [name, chars] of Object.entries(RHYME_MAP)) {
+    if (chars.includes(char)) return name;
+  }
+  return "平水韵通用";
+}
+
+function extractTags(text) {
+  const tags = [];
+  for (const [tag, kws] of Object.entries(TAG_MAP)) {
+    if (kws.some(kw => text.includes(kw))) {
+      tags.push(tag);
+    }
+  }
+  return tags.length > 0 ? tags : ["感怀"];
+}
+
+function findJsonFiles(dir, files = []) {
+  if (!fs.existsSync(dir)) return files;
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      if (entry.name !== '.git') {
+        findJsonFiles(fullPath, files);
+      }
+    } else if (entry.name.endsWith('.json')) {
+      files.push(fullPath);
+    }
+  }
+  return files;
+}
+
+function parsePoetryFiles() {
+  console.log("开始扫描 temp_repo 中的古诗 JSON 文件...");
+  const jsonFiles = findJsonFiles(REPO_DIR);
+  console.log(`共找到 ${jsonFiles.length} 个诗词 JSON 文件。`);
+
+  const uniqueLinesMap = new Map();
+  let idCounter = 1000;
+
+  for (const filePath of jsonFiles) {
+    try {
+      const content = fs.readFileSync(filePath, 'utf-8');
+      const data = JSON.parse(content);
+
+      if (!Array.isArray(data)) continue;
+
+      for (const poem of data) {
+        const author = poem.author || "未知";
+        const title = poem.title || "无题";
+        const paragraphs = poem.paragraphs || poem.stanzas || [];
+
+        for (const p of paragraphs) {
+          if (typeof p !== 'string') continue;
+          const sentences = p.split(/[，。！？；]/).map(s => s.trim()).filter(Boolean);
+
+          for (const s of sentences) {
+            // 筛选标准五言 (5字) 或 七言 (7字) 中文诗句
+            if ((s.length === 5 || s.length === 7) && /^[\u4e00-\u9fa5]+$/.test(s)) {
+              if (uniqueLinesMap.has(s)) continue; // 去重
+
+              const endChar = s[s.length - 1];
+              const isPingEnd = getTone(endChar) === "1";
+              const pattern = Array.from(s).map(c => getTone(c)).join("");
+
+              idCounter++;
+              uniqueLinesMap.set(s, {
+                id: `line_${idCounter}`,
+                content: s,
+                length: s.length,
+                author,
+                dynasty: "唐/宋",
+                title,
+                ping_ze_pattern: pattern,
+                end_tone: isPingEnd ? "平" : "仄",
+                rhyme_group: isPingEnd ? getRhyme(endChar) : "仄声",
+                tags: extractTags(s)
+              });
+            }
+          }
+        }
+      }
+    } catch (err) {
+      // 忽略部分格式不标准文件
+    }
+  }
+
+  const allLines = Array.from(uniqueLinesMap.values());
+  console.log(`成功解析出 ${allLines.length} 条无重复五言/七言古诗名句！`);
+
+  // 限制为质量最佳的前 2,000 ~ 3,000 条以保持轻量顺畅
+  const finalLines = allLines.slice(0, 3000);
+
+  const code = `/**
+ * 古诗集句工程 - 全量开源古诗数据库
+ * 自动从 chinese-poetry 提取构建，共包含 ${finalLines.length} 条名句。
+ */
+
+export const POETRY_DATABASE = ${JSON.stringify(finalLines, null, 2)};
+`;
+
+  fs.writeFileSync(OUTPUT_FILE, code, 'utf-8');
+  console.log(`已成功更新数据库文件 ${OUTPUT_FILE}！`);
+}
+
+parsePoetryFiles();

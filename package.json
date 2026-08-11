@@ -1,0 +1,12 @@
+{
+  "name": "shijing-jiju",
+  "version": "1.0.0",
+  "description": "诗境集句 · 交互式古典集句诗游戏与近体诗格律校验系统",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "opencc-js": "^1.4.1"
+  }
+}

@@ -1,0 +1,14 @@
+node_modules/
+*.log
+.DS_Store
+Thumbs.db
+
+# WorkBuddy 项目数据（本地记忆/会话，不随仓库分发）
+.workbuddy/
+
+# 临时脚本与产物
+scripts/_tmp*
+scripts/tmp*
+
+# CloudStudio 部署产物
+build_publish/
