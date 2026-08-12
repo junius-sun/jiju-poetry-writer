@@ -32,7 +32,7 @@ npm start
 
 ### 在线体验
 
-- **GitHub Pages**：https://junius-sun.github.io/jiju-poetry-writer/（仓库开启 Pages 后生效）
+- **GitHub Pages**：https://junius-sun.github.io/jiju-poetry-writer/
 - **源码仓库**：https://github.com/junius-sun/jiju-poetry-writer
 
 > 在线版首次加载需下载约 150MB 语料（6 个分片），请耐心等待数秒。
