@@ -1151,17 +1151,30 @@ body {
 
 .theme-btn, .dir-btn {
   border: 1px solid #D6CFBF;
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  border-radius: var(--radius-md);
   font-family: inherit;
-  font-size: 0.8rem;
+  font-size: 0.83rem;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FAF8F2 100%);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.theme-btn:hover, .dir-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 14px rgba(31, 36, 45, 0.08);
+  border-color: var(--color-bamboo);
 }
 
 .theme-btn.active, .dir-btn.active {
-  box-shadow: 0 0 0 2px var(--color-bamboo);
+  box-shadow: 0 0 0 2px var(--color-bamboo), 0 4px 12px rgba(44, 76, 59, 0.15);
   font-weight: 600;
+  border-color: var(--color-bamboo);
 }
 
 .card-preview-area {
@@ -1474,3 +1487,346 @@ body {
     align-items: flex-start;
   }
 }
+
+/* ==================== 8. Poetry Card Styles & Typography ==================== */
+
+/* 1. Poetry Card Style Classes (框纹风格：纯装饰叠加，兼容所有纸张底色) */
+
+/* 雅致素宣 (Classic Double Border) */
+.xuan-paper-card.style-classic::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  border: 1px solid currentColor;
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 飞花洒金 (Speckled Gold & Petals) */
+.xuan-paper-card.style-golddust {
+  background-image: 
+    radial-gradient(rgba(198, 146, 20, 0.25) 1px, transparent 1px),
+    radial-gradient(rgba(198, 146, 20, 0.18) 1.5px, transparent 1.5px),
+    radial-gradient(rgba(198, 146, 20, 0.12) 2px, transparent 2px);
+  background-size: 32px 32px, 48px 48px, 64px 64px;
+  background-position: 0 0, 16px 24px, 32px 10px;
+}
+
+.xuan-paper-card.style-golddust::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: 
+    radial-gradient(circle at 18% 22%, rgba(200, 60, 35, 0.15) 0%, transparent 8px),
+    radial-gradient(circle at 82% 15%, rgba(198, 146, 20, 0.2) 0%, transparent 10px),
+    radial-gradient(circle at 70% 82%, rgba(200, 60, 35, 0.12) 0%, transparent 7px),
+    radial-gradient(circle at 25% 75%, rgba(198, 146, 20, 0.18) 0%, transparent 9px);
+}
+
+/* 锦缎装帧 (Brocade Frame Scroll Border) */
+.xuan-paper-card.style-brocade {
+  box-shadow: inset 0 0 0 8px rgba(0, 0, 0, 0.04), 0 15px 50px rgba(0, 0, 0, 0.15);
+}
+
+.xuan-paper-card.style-brocade::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  border: 2px solid currentColor;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.xuan-paper-card.style-brocade::after {
+  content: '❖';
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-size: 1.2rem;
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 诗笺朱栏 (Traditional Red-Lined Paper Grid) */
+.xuan-paper-card.style-letter.vertical {
+  background-image: repeating-linear-gradient(
+    -90deg,
+    transparent,
+    transparent 38px,
+    rgba(200, 60, 35, 0.12) 38px,
+    rgba(200, 60, 35, 0.12) 39px
+  );
+}
+
+.xuan-paper-card.style-letter.horizontal {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 38px,
+    rgba(200, 60, 35, 0.12) 38px,
+    rgba(200, 60, 35, 0.12) 39px
+  );
+}
+
+.xuan-paper-card.style-letter::before {
+  content: '';
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  border: 1px solid rgba(200, 60, 35, 0.25);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ensure inner content stays above pseudo elements */
+.xuan-paper-card .card-inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* 2. Typography Font Classes */
+.xuan-paper-card.font-mashanzheng .card-poem-title,
+.xuan-paper-card.font-mashanzheng .card-poem-body,
+.xuan-paper-card.font-mashanzheng .card-meta {
+  font-family: 'Ma Shan Zheng', cursive, serif;
+}
+
+.xuan-paper-card.font-longcang .card-poem-title,
+.xuan-paper-card.font-longcang .card-poem-body,
+.xuan-paper-card.font-longcang .card-meta {
+  font-family: 'Long Cang', cursive, serif;
+}
+
+.xuan-paper-card.font-notoserif .card-poem-title,
+.xuan-paper-card.font-notoserif .card-poem-body,
+.xuan-paper-card.font-notoserif .card-meta {
+  font-family: 'Noto Serif SC', serif;
+}
+
+.xuan-paper-card.font-wenkai .card-poem-title,
+.xuan-paper-card.font-wenkai .card-poem-body,
+.xuan-paper-card.font-wenkai .card-meta {
+  font-family: 'LXGW WenKai TC', cursive, serif;
+}
+
+.xuan-paper-card.font-kuaile .card-poem-title,
+.xuan-paper-card.font-kuaile .card-poem-body,
+.xuan-paper-card.font-kuaile .card-meta {
+  font-family: 'ZCOOL KuaiLe', sans-serif;
+}
+
+
+/* 3. Style Selector UI Styles */
+.style-picker {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.style-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 9px 8px;
+  border: 1px solid #D6CFBF;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FAF7F2 100%);
+  font-family: inherit;
+  font-size: 0.82rem;
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  white-space: nowrap;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+}
+
+.style-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-bamboo);
+  background: linear-gradient(180deg, #FFFFFF 0%, #F2F8F1 100%);
+  box-shadow: 0 4px 12px rgba(44, 76, 59, 0.12);
+}
+
+.style-btn.active {
+  background: linear-gradient(180deg, #F0F6F2 0%, #E2EEE5 100%);
+  border-color: var(--color-bamboo);
+  box-shadow: 0 0 0 2px var(--color-bamboo), 0 4px 12px rgba(44, 76, 59, 0.18);
+  font-weight: 700;
+  color: var(--color-bamboo);
+}
+
+/* 4. Font Selector UI Styles */
+.font-picker {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.font-btn {
+  padding: 10px 12px;
+  border: 1px solid #D6CFBF;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FAF7F2 100%);
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-size: 1.05rem;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.font-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-bamboo);
+  box-shadow: 0 4px 12px rgba(44, 76, 59, 0.12);
+}
+
+.font-btn.active {
+  border-color: var(--color-bamboo);
+  background: linear-gradient(135deg, rgba(44, 76, 59, 0.08) 0%, rgba(44, 76, 59, 0.02) 100%);
+  box-shadow: 0 0 0 2px var(--color-bamboo), 0 4px 12px rgba(44, 76, 59, 0.15);
+  color: var(--color-bamboo);
+  font-weight: bold;
+}
+
+
+/* 5. Export Button Styles */
+.export-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.btn-export {
+  background: linear-gradient(135deg, #C83C23 0%, #DB5A3C 45%, #C69214 100%);
+  color: #FFF;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 16px rgba(200, 60, 35, 0.3);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-export::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+  transform: rotate(30deg) translateX(-100%);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: rotate(30deg) translateX(-100%); }
+  20% { transform: rotate(30deg) translateX(100%); }
+  100% { transform: rotate(30deg) translateX(100%); }
+}
+
+.btn-export:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(200, 60, 35, 0.45);
+}
+
+.btn-export:active {
+  transform: translateY(-1px);
+}
+
+#btn-copy-poem {
+  background: linear-gradient(135deg, #2C4C3B 0%, #3D6B58 100%);
+  color: #FFF;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 16px rgba(44, 76, 59, 0.25);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#btn-copy-poem:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(44, 76, 59, 0.4);
+}
+
+#btn-copy-poem:active {
+  transform: translateY(-1px);
+}
+
+
+/* 6. Horizontal layout for xuan-paper-card */
+.xuan-paper-card.horizontal .card-inner {
+  display: flex;
+  flex-direction: column;
+  padding: 32px;
+}
+
+.xuan-paper-card.horizontal .card-header-vertical {
+  writing-mode: horizontal-tb;
+  border-left: none;
+  border-bottom: 1px solid var(--color-ink-muted);
+  padding-left: 0;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.xuan-paper-card.horizontal .card-poem-title {
+  margin-bottom: 0;
+}
+
+.xuan-paper-card.horizontal .card-poem-body {
+  writing-mode: horizontal-tb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.xuan-paper-card.horizontal .stamp-seal {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  margin: 0;
+}
+

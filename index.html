@@ -9,7 +9,8 @@
   <!-- 引入 Google 国风与雅致字体 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Long+Cang&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Long+Cang&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;700&family=LXGW+WenKai+TC:wght@400;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -227,6 +228,27 @@
           </div>
 
           <div class="control-group">
+            <label>诗牌框纹风格：</label>
+            <div class="style-picker">
+              <button class="style-btn active" data-style="classic">🏛️ 雅致素宣</button>
+              <button class="style-btn" data-style="golddust">✨ 飞花洒金</button>
+              <button class="style-btn" data-style="brocade">🖼️ 锦缎装帧</button>
+              <button class="style-btn" data-style="letter">📜 诗笺朱栏</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label>诗文字体：</label>
+            <div class="font-picker">
+              <button class="font-btn active" data-font="mashanzheng" style="font-family:'Ma Shan Zheng',cursive;">马善政行书</button>
+              <button class="font-btn" data-font="longcang" style="font-family:'Long Cang',cursive;">Long Cang 随性</button>
+              <button class="font-btn" data-font="notoserif" style="font-family:'Noto Serif SC',serif;">思源宋体</button>
+              <button class="font-btn" data-font="wenkai" style="font-family:'LXGW WenKai TC',cursive;">霞鹜文楷</button>
+              <button class="font-btn" data-font="kuaile" style="font-family:'ZCOOL KuaiLe',sans-serif;">钉钉进步体</button>
+            </div>
+          </div>
+
+          <div class="control-group">
             <label>宣纸纸张底色：</label>
             <div class="theme-picker">
               <button class="theme-btn active" data-theme="xuan" style="background:#F5F2E9; color:#1A1F2C;">古朴宣纸</button>
@@ -244,7 +266,10 @@
             </div>
           </div>
 
-          <div class="action-box">
+          <div class="export-actions">
+            <button class="btn btn-export btn-block" id="btn-export-image">
+              <span class="icon">📷</span> 导出为图片
+            </button>
             <button class="btn btn-primary btn-block" id="btn-copy-poem">
               <span class="icon">📋</span> 复制文本全诗
             </button>

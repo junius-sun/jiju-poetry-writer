@@ -31,7 +31,9 @@ class JijuPoetryApp {
       title: '集句·秋夜思',
       author: '今人集句',
       theme: 'xuan',
-      direction: 'vertical'
+      direction: 'vertical',
+      style: 'classic',
+      font: 'mashanzheng'
     };
 
     // 飞花闯关数据
@@ -829,6 +831,26 @@ class JijuPoetryApp {
       this.updateCardPreview();
     });
 
+    // 样式风格选择器
+    document.querySelectorAll('.style-picker .style-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.style-picker .style-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.cardConfig.style = btn.getAttribute('data-style');
+        this.updateCardPreview();
+      });
+    });
+
+    // 字体选择器
+    document.querySelectorAll('.font-picker .font-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.font-picker .font-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.cardConfig.font = btn.getAttribute('data-font');
+        this.updateCardPreview();
+      });
+    });
+
     document.querySelectorAll('.theme-picker .theme-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.theme-picker .theme-btn').forEach(b => b.classList.remove('active'));
@@ -847,9 +869,14 @@ class JijuPoetryApp {
       });
     });
 
+    // 导出为图片按钮
+    document.getElementById('btn-export-image').addEventListener('click', () => {
+      this.exportCardAsImage();
+    });
+
     document.getElementById('btn-copy-poem').addEventListener('click', () => {
       if (this.currentPoemLines.length === 0) {
-        alert("请先在‘自由集句’页面组装诗句！");
+        alert("请先在'自由集句'页面组装诗句！");
         return;
       }
       const poemText = `《${this.cardConfig.title}》\n[${this.cardConfig.author}]\n\n` +
@@ -858,7 +885,6 @@ class JijuPoetryApp {
       navigator.clipboard.writeText(poemText).then(() => {
         alert("📋 诗句全文与溯源出处已复制到剪贴板！");
       }).catch(() => {
-        // 剪贴板 API 不可用（如非安全上下文）时降级为弹窗展示，便于手动复制
         window.prompt("自动复制失败，请手动复制：", poemText);
       });
     });
@@ -873,7 +899,14 @@ class JijuPoetryApp {
     titleEl.textContent = this.cardConfig.title;
     authorEl.textContent = this.cardConfig.author;
 
-    cardElement.className = `xuan-paper-card theme-${this.cardConfig.theme} ${this.cardConfig.direction}`;
+    // Build class list: base + theme + direction + style + font
+    cardElement.className = [
+      'xuan-paper-card',
+      `theme-${this.cardConfig.theme}`,
+      this.cardConfig.direction,
+      `style-${this.cardConfig.style}`,
+      `font-${this.cardConfig.font}`
+    ].join(' ');
 
     if (this.currentPoemLines.length === 0) {
       bodyEl.innerHTML = `<div style="font-size:1.1rem; opacity:0.6;">(请先在自由集句页面组装诗句...)</div>`;
@@ -891,6 +924,44 @@ class JijuPoetryApp {
     });
 
     bodyEl.innerHTML = linesHtml;
+  }
+
+  /**
+   * 导出诗牌为 PNG 高清图片
+   */
+  async exportCardAsImage() {
+    const cardEl = document.getElementById('xuan-card');
+    if (!cardEl) return;
+
+    if (this.currentPoemLines.length === 0) {
+      alert("请先在'自由集句'页面组装诗句！");
+      return;
+    }
+
+    const exportBtn = document.getElementById('btn-export-image');
+    const originalText = exportBtn.innerHTML;
+    exportBtn.innerHTML = '<span class="icon">⏳</span> 渲染中...';
+    exportBtn.disabled = true;
+
+    try {
+      const canvas = await html2canvas(cardEl, {
+        scale: 3,
+        useCORS: true,
+        backgroundColor: null,
+        logging: false
+      });
+
+      const link = document.createElement('a');
+      link.download = `诗牌_${this.cardConfig.title}_${Date.now()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (err) {
+      console.error('导出失败:', err);
+      alert('导出图片失败，请检查浏览器设置后重试。');
+    } finally {
+      exportBtn.innerHTML = originalText;
+      exportBtn.disabled = false;
+    }
   }
 
   // ==================== 5. 平水韵介绍交互 ====================
