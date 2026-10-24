@@ -3,10 +3,20 @@
   "version": "1.0.0",
   "description": "诗境集句 · 交互式古典集句诗游戏与近体诗格律校验系统",
   "type": "module",
+  "engines": { "node": ">=22.13.0" },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build:data": "node --max-old-space-size=4096 scripts/compress_corpus.js",
+    "build:importers": "node scripts/build_input_vendor.js",
+    "fetch:sources": "node scripts/fetch_source_snapshot.js",
+    "data:quality": "node --max-old-space-size=4096 scripts/improve_corpus_quality.js",
+    "data:single-source": "node --max-old-space-size=4096 scripts/canonicalize_corpus.js",
+    "test": "node --max-old-space-size=4096 --test --test-concurrency=1 tests/metrical.test.js tests/corpus.test.js tests/source-quality.test.js tests/materials.test.js tests/ai.test.js tests/poetry-card.test.js",
+    "test:smoke": "node --max-old-space-size=4096 scripts/smoke_test.js"
   },
   "dependencies": {
-    "opencc-js": "^1.4.1"
+    "fflate": "0.8.3",
+    "opencc-js": "^1.4.1",
+    "pdfjs-dist": "6.4.299"
   }
 }

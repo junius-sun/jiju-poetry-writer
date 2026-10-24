@@ -1,0 +1,163 @@
+/* Shared controls: warm paper, ink navigation, cinnabar primary actions.
+   Kept last in the cascade; printable artwork is intentionally excluded. */
+:root { --action:#a63f32; --action-hover:#853126; --control-ink:#292a25; --control-line:#b9af9f; --control-paper:#fffdf8; --control-soft:#eee8dd; }
+/* The workspace frame never depends on the selected feature. */
+:root #atelier-app { color:var(--color-ink); font-size:14px; }
+:root #atelier-app .header-inner { max-width:1440px; }
+:root #atelier-app .logo-area { gap:10px; }
+:root #atelier-app .logo-stamp { width:34px; height:34px; }
+:root #atelier-app .title-group h1 { font-size:21px; line-height:1.4; letter-spacing:.06em; }
+:root #atelier-app .app-main { max-width:1440px; padding:0 32px 48px; margin:0 auto; }
+:root #atelier-app :is(.puzzle-container,.pingshui-guide-layout,.card-generator-layout) { padding-top:0; }
+:root #atelier-app .workspace-page-heading {
+  display:flex; flex-direction:row; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px 24px; text-align:left;
+  min-height:92px; margin:0 0 24px; padding:22px 0; border:0; border-bottom:1px solid var(--line);
+}
+:root #atelier-app .workspace-page-heading h2 { display:block; margin:0; color:var(--color-ink); font:500 28px/1.4 var(--font-serif); letter-spacing:.04em; }
+:root #atelier-app :is(.creative-panel,.creative-materials,.ai-workbench,.card-controls,.pingshui-card,.rhyme-table-section,.level-card) { background:var(--bg-card); border:1px solid var(--line); border-radius:6px; box-shadow:none; }
+:root #atelier-app .app-footer { width:calc(100% - 64px); max-width:1376px; margin:0 auto; padding:24px 0; font-size:12px; color:var(--color-ink-muted); }
+:root #atelier-app :is(button,summary,input,select,textarea), #site-home :is(button,.home-button,.home-enter,.home-text-link,.home-demo-action) { font-family:'Segoe UI','Microsoft YaHei',sans-serif; }
+:root #atelier-app :is(.btn,.text-button,.btn-search,.smart-action-text,.poem-line-action,.card-collection-preview),
+#site-home :is(.home-button,.home-enter,.home-text-link,.home-demo-action) {
+  display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  min-height:44px; padding:10px 16px; border:1px solid var(--control-line); border-radius:6px;
+  background:var(--control-paper); color:var(--control-ink); font-size:14px; line-height:1.5; font-weight:600;
+  text-decoration:none; letter-spacing:0; box-shadow:0 1px 1px #30271b08;
+  transition:background .16s,border-color .16s,color .16s,transform .12s;
+}
+:root #atelier-app :is(.btn-primary,.btn-export,.btn-search,#btn-empty-start,#ai-analyze),
+#site-home :is(.home-button,.home-enter) { background:var(--action); color:#fffdf8; border-color:var(--action); }
+:root #atelier-app :is(.btn-secondary,.btn-outline,.text-button,.smart-action-text,.poem-line-action),
+#site-home :is(.home-text-link,.home-demo-action) { background:var(--control-paper); color:var(--control-ink); border-color:var(--control-line); }
+:root #atelier-app :is(.btn,.text-button,.btn-search,.smart-action-text,.poem-line-action,.card-collection-preview):hover:not(:disabled),
+#site-home :is(.home-text-link,.home-demo-action):hover { background:var(--control-soft); border-color:#8a7963; color:#292a25; transform:none; }
+:root #atelier-app :is(.btn-primary,.btn-export,.btn-search,#btn-empty-start,#ai-analyze):hover:not(:disabled),
+#site-home :is(.home-button,.home-enter):hover { background:var(--action-hover); border-color:var(--action-hover); color:#fffdf8!important; }
+:root #atelier-app :is(button,summary):focus-visible, #site-home :is(a,button):focus-visible { outline:3px solid #a63f32; outline-offset:3px; }
+:root #atelier-app button:active:not(:disabled), #site-home :is(.home-button,.home-enter,.home-text-link,.home-demo-action):active { transform:translateY(1px); }
+/* Disabled is a semantic state and must win over every feature's action colour. */
+:root #atelier-app button:disabled { opacity:1!important; background:#e5e0d7!important; border-color:#cbc3b6!important; color:#787167!important; box-shadow:none!important; cursor:not-allowed; }
+:root #atelier-app :is(.nav-tabs,.assembly-stepper,.drawer-tabs,.material-tabs,.song-mobile-tabs,.length-selector) { gap:6px; }
+:root #atelier-app :is(.nav-tab,.assembly-stepper button,.drawer-tab,.material-tab,.song-mobile-tabs button,.btn-toggle,.rhyme-cat-btn) {
+  min-height:44px; padding:10px 14px; font:500 14px/1.5 'Segoe UI','Microsoft YaHei',sans-serif;
+  border:1px solid #c9c0b2; border-radius:6px; background:#fffdf8; color:#4b473e;
+}
+:root #atelier-app :is(.nav-tab,.drawer-tab,.material-tab,.rhyme-cat-btn).active,
+:root #atelier-app :is(.assembly-stepper [aria-current=step],.song-mobile-tabs [aria-pressed=true],.btn-toggle.active) { background:#343b33; color:#fffdf8; border-color:#343b33; box-shadow:none; }
+:root #atelier-app :is(.nav-tab,.drawer-tab,.material-tab,.assembly-stepper button,.rhyme-cat-btn):hover:not(:disabled) { border-color:#796b56; }
+:root #atelier-app .nav-tab::after { display:none; }
+:root #atelier-app :is(.nav-index,.subtitle) { display:none; }
+:root #atelier-app .nav-tabs { flex-wrap:wrap; }
+:root #atelier-app .header-inner { min-height:78px; gap:20px; padding:14px 32px; }
+:root #atelier-app .motion-toggle { border:1px solid #c9c0b2; border-radius:6px; min-height:40px; padding:8px 10px; font-size:12px; background:transparent; }
+:root #atelier-app .assembly-stepper span { color:inherit; margin-right:5px; border:0; opacity:.8; }
+:root #atelier-app .drawer-tabs { border:0; background:transparent; padding:0; grid-template-columns:repeat(3,minmax(0,1fr)); }
+:root #atelier-app :is(.drawer-tab,.material-tab) { flex:1; text-align:center; }
+:root #atelier-app .length-selector { background:none; padding:0; border:0; }
+:root #atelier-app .btn-toggle { padding:10px 6px; font-size:13px; white-space:nowrap; }
+:root #atelier-app #rhyme-select { min-height:44px; padding:10px 9px; background:#fffdf8; border:1px solid #b9af9f; border-radius:6px; }
+:root #atelier-app :is(.format-btn,.dir-btn,.theme-btn,.font-btn) { min-height:44px; font-size:14px; border:1px solid #b9af9f; border-radius:6px; }
+:root #atelier-app :is(.style-btn,.format-btn,.dir-btn,.theme-btn,.font-btn).active { outline:2px solid #a63f32; outline-offset:2px; border-color:#a63f32; }
+:root #atelier-app .style-btn { border:1px solid #b9af9f; border-radius:6px; }
+:root #atelier-app .style-btn strong, :root #atelier-app .font-btn small { font-size:14px; color:#39382f; }
+:root #atelier-app summary { cursor:pointer; }
+:root #atelier-app :is(.song-feedback,.song-rhyme-note,.song-intent,.card-refinement,.ai-settings,.guide-advanced,.guide-rhyme-reference) > summary {
+  min-height:44px; padding:11px 13px; border:1px solid #c9c0b2; border-radius:6px; background:#fffdf8; color:#39382f; font-size:14px; line-height:1.6;
+}
+:root #atelier-app details[open] > summary { border-color:#a39076; }
+:root #atelier-app .ai-settings { border:0; background:none; overflow:visible; }
+:root #atelier-app .ai-settings > summary { color:#a63f32; font-weight:600; }
+:root #atelier-app .ai-settings > summary span, :root #atelier-app .card-refinement > summary span { display:none; }
+:root #atelier-app .source-details > summary { width:fit-content; min-height:34px; padding:5px 8px; margin-top:7px; border:1px solid #d0c6b6; border-radius:4px; background:#f5f0e7; font-size:12px; color:#5a5143; }
+:root #atelier-app .source-details { margin-top:8px; }
+:root #atelier-app .btn-remove-line { min-height:36px; min-width:36px; border:1px solid #c9c0b2; border-radius:5px; background:#fffdf8; color:#795140; }
+:root #atelier-app .search-suggestions button { min-height:36px; border:1px solid #c9c0b2; border-radius:5px; padding:5px 12px; background:#fffdf8; color:#5a5143; }
+:root #atelier-app .action-buttons { gap:8px; }
+:root #atelier-app .action-buttons .btn { min-height:40px; padding:8px 12px; border:1px solid #b9af9f; background:#fffdf8; color:#39382f; font-size:14px; }
+:root #atelier-app .smart-card { position:relative; }
+:root #atelier-app .smart-action-text { min-width:74px; }
+:root #atelier-app .btn-swap-smart { min-height:40px; padding:8px 12px; font-size:14px; }
+:root #atelier-app .song-feedback { margin-top:12px; }
+:root #atelier-app .song-feedback > summary > span { font-size:12px; color:#675f53; }
+:root #atelier-app .material-actions .btn { min-height:44px; padding:10px 14px; font-size:14px; }
+:root #atelier-app .material-header h2, :root #atelier-app .ai-section-heading h2 { font-size:25px; }
+:root #atelier-app .inspiration-workspace { gap:24px; }
+:root #atelier-app .material-description { font-size:15px; line-height:1.8; margin:12px 0 20px; }
+:root #atelier-app .material-hint, :root #atelier-app .ai-hint { font-size:14px; line-height:1.8; }
+:root #atelier-app :is(.material-connection,#ai-model-label,#material-status,#material-count,#material-state,#intent-char-count) { font-size:12px; line-height:1.7; }
+:root #atelier-app .material-connection { max-width:none; white-space:nowrap; flex-shrink:0; }
+:root #atelier-app .intent-text-field label { font-size:14px; }
+:root #atelier-app .intent-text-field textarea { font-size:16px; min-height:140px; }
+:root #atelier-app .song-setting-footnote, :root #atelier-app .song-material-entry > p, :root #atelier-app .material-header .eyebrow, :root #atelier-app .ai-section-heading .eyebrow { display:none; }
+:root #atelier-app .direction-actions { justify-content:flex-end; }
+:root #atelier-app .direction-actions > p { display:none; }
+:root #atelier-app .card-studio-heading > p { display:none; }
+:root #atelier-app .control-group > label { font-size:14px; }
+:root #atelier-app .ai-config-grid :is(input,select) { font-size:16px; min-height:44px; }
+:root #atelier-app .ai-config-grid label { font-size:14px; }
+:root #atelier-app .ai-config-grid { margin-top:20px; }
+:root #atelier-app .ai-inline-actions { gap:8px; }
+:root #atelier-app .material-drop { border:1px dashed #a39076; background:#fffdf8; border-radius:6px; }
+:root #atelier-app .material-drop small { font-size:12px; }
+:root #atelier-app .guide-reading a { padding:7px 0; font-size:15px; }
+
+/* No cover image: the title and invitation carry the opening. */
+#site-home .home-hero { min-height:0; padding:100px 24px 106px; }
+#site-home .home-hero-copy h1 { font-size:clamp(34px,4.2vw,56px); line-height:1.4; text-wrap:balance; }
+#site-home .home-hero-copy h1 span { display:block; }
+#site-home .home-hero-copy p { font-size:17px; margin-top:22px; }
+#site-home .home-hero-actions { margin-top:32px; gap:12px; }
+#site-home .home-hero-actions .home-button { min-height:50px; min-width:165px; font-size:16px; }
+#site-home .home-header nav a { padding:8px 0; border-bottom:1px solid #a89b87; }
+#site-home .home-enter { min-height:42px; padding:9px 15px; }
+#site-home .home-header a.home-enter:hover { color:#fffdf8!important; }
+#site-home .home-header { gap:20px; }
+#site-home .home-section { padding-block:66px; }
+#site-home .home-material-tabs button { border:1px solid #b9af9f; border-radius:5px; min-height:44px; padding:9px 20px; background:#fffdf8; font-size:14px; }
+#site-home .home-material-tabs button[aria-selected=true] { background:#343b33; color:#fffdf8; border-color:#343b33; }
+#site-home .home-material-tabs { gap:8px; border:0; }
+#site-home .home-tab-mark { display:none; }
+#site-home .home-footer button { border:1px solid #b9af9f; min-height:40px; padding:6px 10px; border-radius:5px; }
+#site-home .home-style-choice[aria-pressed=true] { outline:2px solid #ead8b8; outline-offset:2px; }
+#site-home .home-button-paper { background:#f2eddf; color:#292a25; border-color:#f2eddf; }
+#site-home .home-button-paper:hover { background:#fffdf8; color:#292a25!important; border-color:#fffdf8; }
+@media(max-width:1050px) {
+  :root #atelier-app .header-inner { flex-wrap:wrap; gap:12px; }
+  :root #atelier-app .nav-tabs { order:3; width:100%; justify-content:center; }
+  :root #atelier-app .motion-toggle { margin-left:auto; }
+}
+@media(max-width:700px) {
+  :root #atelier-app .header-inner { padding:12px 18px; }
+  :root #atelier-app .title-group h1 { font-size:18px; }
+  :root #atelier-app .logo-stamp { width:30px; height:30px; }
+  :root #atelier-app .app-main { padding:0 18px 32px; }
+  :root #atelier-app .workspace-page-heading { padding:20px 0; min-height:74px; margin-bottom:20px; gap:16px; }
+  :root #atelier-app .workspace-page-heading h2 { font-size:24px; }
+  :root #atelier-app .app-footer { width:calc(100% - 36px); }
+  :root #atelier-app .nav-tabs { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:5px; }
+  :root #atelier-app .nav-tab { font-size:13px; padding:10px 2px; }
+  :root #atelier-app .assembly-stepper { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:5px; width:100%; }
+  :root #atelier-app .assembly-stepper button { font-size:13px; padding:9px 4px; }
+  :root #atelier-app .assembly-stepper span { display:none; }
+  :root #atelier-app .song-workspace-bar { gap:12px; }
+  :root #atelier-app .song-settings-fold > summary { display:flex; min-height:44px; padding:10px 12px; border:1px solid #b9af9f; background:#fffdf8; border-radius:6px; }
+  :root #atelier-app .song-settings-content { padding-top:16px; }
+  :root #atelier-app .song-material-entry { display:none; }
+  :root #atelier-app .song-mobile-tabs { gap:6px; border:0; }
+  :root #atelier-app .song-mobile-tabs button { font-size:14px; }
+  :root #atelier-app .drawer-tab { padding-inline:5px; font-size:13px; }
+  :root #atelier-app .song-feedback > summary > span { float:none; margin-left:8px; }
+  :root #atelier-app .ai-actions { gap:8px; }
+  :root #atelier-app .material-tabs { gap:5px; }
+  :root #atelier-app .material-tab { padding-inline:6px; }
+  :root #atelier-app .inspiration-workspace { gap:20px; }
+  #site-home .home-header { padding:16px 20px; gap:12px; }
+  #site-home .home-hero { padding:70px 20px 74px; }
+  #site-home .home-hero-copy h1 { font-size:32px; letter-spacing:0; }
+  #site-home .home-hero-copy p { font-size:15px; max-width:280px; margin-inline:auto; }
+  #site-home .home-hero-actions { flex-direction:row; flex-wrap:wrap; gap:10px; }
+  #site-home .home-hero-actions .home-button { min-width:145px; }
+  #site-home .home-section { padding-block:50px; }
+}
+@media(prefers-reduced-motion:reduce) { :root #atelier-app :is(button,summary), #site-home :is(a,button) { transition:none; } }
+:root.motion-paused #atelier-app button { transition:none; }

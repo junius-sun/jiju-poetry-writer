@@ -1,0 +1,62 @@
+.ai-workbench { padding: 26px 30px; margin: 22px 0 34px; border: 1px solid var(--border-color, #2d4540); border-radius: 18px; background: linear-gradient(125deg, #142b26d9, #101f1dcc); }
+.ai-section-heading, .ai-direction-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.ai-section-heading h2 { font-size: 25px; margin: 5px 0 0; }
+.ai-section-heading h3, .ai-direction-heading h3 { font-size: 18px; margin: 0; color: #e1d3ae; }
+#ai-model-label { font-size: 12px; color: #a4b4a6; overflow-wrap: anywhere; }
+.ai-settings { margin: 22px 0; border: 1px solid #385148; border-radius: 10px; overflow: hidden; }
+.ai-settings > summary { cursor: pointer; padding: 15px 18px; color: #d3c091; background: #20352b80; }
+.ai-settings > summary span { margin-left: 14px; font-size: 11px; color: #96a999; }
+#ai-config-form { padding: 6px 18px 0; }
+.ai-config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 14px 0; }
+.ai-config-grid label, .ai-brief-label { display: block; color: #bac7b7; font-size: 13px; }
+.ai-config-grid input, .ai-config-grid select, #ai-brief { width: 100%; margin-top: 8px; border: 1px solid #3a5348; border-radius: 7px; padding: 11px 12px; background: #0c1d18; color: #eee5d1; font: inherit; box-sizing: border-box; }
+.ai-config-grid input:focus, .ai-config-grid select:focus, #ai-brief:focus { outline: 2px solid #c7b786; outline-offset: 2px; }
+.ai-checkbox { display: flex; align-items: center; gap: 9px; font-size: 13px; color: #acbdad; }
+.ai-checkbox input { accent-color: #c7b786; }
+.ai-advanced { margin-top: 15px; color: #adbca9; font-size: 13px; }
+.ai-advanced summary { cursor: pointer; }
+.ai-hint { font-size: 12px; line-height: 1.8; color: #9cac9b; margin: 9px 0; }
+.ai-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin: 15px 0; }
+.ai-inline-actions { display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
+.ai-direction-heading > .ai-inline-actions { flex:0 0 auto; }
+[data-ai-cancel][hidden], #ai-activity[hidden], #ai-reconnect[hidden] { display:none !important; }
+.ai-status { font-size: 12px; line-height: 1.8; color: #bac6b2; overflow-wrap: anywhere; }
+#ai-config-status { padding: 0 18px 12px; }
+.ai-status.is-error { color: #f4aa98; }
+.ai-direction-heading > div { flex: 1; }
+.ai-direction-heading button, .ai-section-heading button { flex-shrink: 0; }
+.ai-brief-label span { font-size: 11px; color: #91a492; margin-left: 14px; }
+#ai-brief { resize: vertical; min-height: 105px; font-size: 14px; line-height: 1.8; }
+.ai-intent-tags { display: flex; flex-wrap: wrap; gap: 7px; margin: 12px 0; }
+.ai-intent-tags span, .ai-role { font-size: 11px; color: #d4c396; border: 1px solid #5b6042; border-radius: 20px; padding: 4px 11px; }
+.ai-image-note { padding: 10px 0; border-top: 1px solid #2c443a; font-size: 13px; color: #b7c5b5; }
+.ai-image-note summary { cursor: pointer; }
+.ai-ocr, .ai-reason, .ai-summary { white-space: pre-wrap; line-height: 1.85; }
+.ai-review { border-top: 1px solid #344a3f; padding-top: 24px; margin-top: 24px; }
+.ai-candidates { padding-bottom: 22px; margin-bottom: 18px; border-bottom: 1px solid #344a3f; }
+.ai-candidate { padding: 16px 18px; margin: 12px 0; border: 1px solid #3c5547; border-radius: 12px; background: linear-gradient(145deg, #263e3070, #13272080); }
+.ai-candidate-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.ai-candidate h4 { margin: 13px 0 7px; font-size: 23px; letter-spacing: .08em; color: #f1e4c5; }
+.ai-source { font-size: 11px; line-height: 1.6; color: #a1b49d; margin: 0; }
+.ai-reason, .ai-summary { font-size: 13px; color: #d2d6be; }
+.ai-caution { font-size: 12px; color: #c8b895; line-height: 1.8; }
+.ai-ratings { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 18px 0; }
+.ai-ratings div { padding: 10px 7px; border-radius: 8px; background: #23372b; text-align: center; }
+.ai-ratings span { display: block; font-size: 11px; color: #9fb296; }
+.ai-ratings strong { display: block; margin-top: 8px; font-size: 24px; color: #dccc9d; }
+.ai-ratings small { font-size: 11px; color: #93a587; font-weight: normal; }
+.ai-strengths { padding-left: 19px; color: #bccab1; font-size: 13px; line-height: 1.8; }
+.ai-issue { border-left: 2px solid #928854; padding: 0 0 0 12px; margin: 20px 0; }
+.ai-issue h4 { font-size: 13px; color: #dacba8; margin: 0 0 8px; }
+.ai-issue p { font-size: 12px; line-height: 1.8; }
+.ai-workbench [hidden], .ai-candidates [hidden] { display: none !important; }
+@media (max-width: 650px) {
+  .ai-workbench { padding: 21px 17px; }
+  .ai-config-grid { grid-template-columns: 1fr; }
+  .ai-config-grid input, .ai-config-grid select, #ai-brief { font-size: 16px; }
+  .ai-section-heading, .ai-direction-heading { align-items: flex-start; flex-wrap: wrap; }
+  .ai-direction-heading > div { flex-basis: 100%; }
+  .ai-brief-label span { display: block; margin: 6px 0; }
+  .ai-ratings { grid-template-columns: 1fr 1fr; }
+  .ai-settings > summary span { display: block; margin: 6px 0 0 15px; }
+}

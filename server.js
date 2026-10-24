@@ -1,64 +1,16 @@
-import http from 'http';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { existsSync } from 'node:fs';
+import { createConfigStore } from './server/ai/config.js';
+import { createAiService } from './server/ai/service.js';
+import { createPoetryServer } from './server/http.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const PORT = 3000;
-
-const MIME_TYPES = {
-  '.html': 'text/html; charset=utf-8',
-  '.css': 'text/css; charset=utf-8',
-  '.js': 'text/javascript; charset=utf-8',
-  '.json': 'application/json; charset=utf-8',
-  '.ico': 'image/x-icon',
-  '.png': 'image/png',
-  '.jpg': 'image/jpeg',
-  '.svg': 'image/svg+xml',
-  '.woff': 'font/woff',
-  '.woff2': 'font/woff2'
-};
-
-http.createServer((req, res) => {
-  // 解码 URL（中文/空格等），解码失败直接 400
-  let reqPath;
-  try {
-    reqPath = decodeURIComponent(req.url.split('?')[0]);
-  } catch {
-    res.writeHead(400, { 'Content-Type': 'text/plain; charset=utf-8' });
-    res.end('400 Bad Request');
-    return;
-  }
-
-  // 规范化并限制在站点根目录内，防止路径穿越（如 /../）
-  const safePath = path.normalize(reqPath).replace(/^([/\\]*\.\.[/\\]*)+/, '');
-  const filePath = path.join(__dirname, safePath === '/' || safePath === '\\' ? 'index.html' : safePath);
-
-  if (!filePath.startsWith(__dirname)) {
-    res.writeHead(403, { 'Content-Type': 'text/plain; charset=utf-8' });
-    res.end('403 Forbidden');
-    return;
-  }
-
-  // 无 favicon 时静默返回 204，避免控制台 404 噪音
-  if (reqPath === '/favicon.ico') {
-    res.writeHead(204);
-    res.end();
-    return;
-  }
-
-  fs.readFile(filePath, (err, content) => {
-    if (err) {
-      res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
-      res.end('404 Not Found');
-    } else {
-      const ext = path.extname(filePath).toLowerCase();
-      const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-      res.writeHead(200, { 'Content-Type': contentType });
-      res.end(content);
-    }
-  });
-}).listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+const root = path.dirname(fileURLToPath(import.meta.url));
+const environmentFile = path.join(root, '.env.local');
+if (existsSync(environmentFile)) process.loadEnvFile(environmentFile);
+const configStore = createConfigStore(path.join(root, '.local', 'ai-config.json'));
+const aiService = createAiService({ configStore });
+const server = createPoetryServer({ root, configStore, aiService });
+const port = Number(process.env.PORT || 3000);
+const host = process.env.HOST || '127.0.0.1';
+server.listen(port, host, () => console.log(`Server running on http://localhost:${port}`));

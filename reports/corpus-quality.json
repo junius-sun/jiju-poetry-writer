@@ -1,0 +1,716 @@
+{
+  "inputCount": 697920,
+  "runInputCount": 696513,
+  "upstreamPoems": 131050,
+  "outputCount": 696404,
+  "sourceStatuses": {
+    "matched": 561809,
+    "unverified": 3220,
+    "text-matched": 38766,
+    "ambiguous": 92435,
+    "conflict": 174
+  },
+  "genres": {
+    "unknown": 251960,
+    "poem": 372755,
+    "ci": 49892,
+    "qu": 21797
+  },
+  "correctedAuthors": 89,
+  "correctedTitles": 11859,
+  "correctedToneLines": 5491,
+  "correctedTags": 38603,
+  "multiSourceLines": 252005,
+  "qualityFlags": {
+    "TONE_AMBIGUOUS": 428745,
+    "RHYME_UNCERTAIN": 26389,
+    "TONE_UNKNOWN": 45350,
+    "SOURCE_UNVERIFIED": 134595,
+    "SOURCE_AMBIGUOUS": 92435,
+    "SOURCE_CONFLICT": 174,
+    "AUTHOR_UNKNOWN": 44781
+  },
+  "quarantined": 1516,
+  "repositories": {
+    "tang": {
+      "repo": "chinese-poetry/chinese-poetry",
+      "commit": "b8594f81a89752241442f2ce267d6f66f96704ee"
+    },
+    "anthology": {
+      "repo": "muskjobstao/haitangshishe",
+      "commit": "90b53bfab67275e8b2e8e94807515b77fc17f2ba"
+    }
+  },
+  "quarantineSources": [
+    {
+      "author": "宋玉",
+      "title": "风赋",
+      "genre": "fu",
+      "count": 15,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "宋玉",
+      "title": "高唐赋",
+      "genre": "fu",
+      "count": 27,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "宋玉",
+      "title": "神女赋",
+      "genre": "fu",
+      "count": 23,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "贾谊",
+      "title": "鵩鸟赋",
+      "genre": "fu",
+      "count": 51,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "贾谊",
+      "title": "吊屈原赋",
+      "genre": "fu",
+      "count": 21,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "张衡",
+      "title": "归田赋",
+      "genre": "fu",
+      "count": 1,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "王粲",
+      "title": "登楼赋",
+      "genre": "fu",
+      "count": 22,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "曹植",
+      "title": "洛神赋",
+      "genre": "fu",
+      "count": 27,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "向秀",
+      "title": "思旧赋",
+      "genre": "fu",
+      "count": 18,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "陆机",
+      "title": "文赋",
+      "genre": "fu",
+      "count": 24,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "左思",
+      "title": "三都赋",
+      "genre": "fu",
+      "count": 327,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "谢庄",
+      "title": "月赋",
+      "genre": "fu",
+      "count": 10,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "谢惠连",
+      "title": "雪赋",
+      "genre": "fu",
+      "count": 20,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "鲍照",
+      "title": "芜城赋",
+      "genre": "fu",
+      "count": 11,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "江淹",
+      "title": "别赋",
+      "genre": "fu",
+      "count": 22,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "庾信",
+      "title": "小园赋",
+      "genre": "fu",
+      "count": 22,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "范仲淹",
+      "title": "岳阳楼记",
+      "genre": "prose",
+      "count": 5,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "苏舜钦",
+      "title": "沧浪亭记",
+      "genre": "prose",
+      "count": 19,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "欧阳修",
+      "title": "秋声赋",
+      "genre": "fu",
+      "count": 21,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "欧阳修",
+      "title": "醉翁亭记",
+      "genre": "prose",
+      "count": 14,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "曾巩",
+      "title": "墨池记",
+      "genre": "prose",
+      "count": 9,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "苏轼",
+      "title": "前赤壁赋",
+      "genre": "fu",
+      "count": 20,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "苏轼",
+      "title": "后赤壁赋",
+      "genre": "fu",
+      "count": 10,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "高启",
+      "title": "游灵岩记",
+      "genre": "prose",
+      "count": 30,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "袁宏道",
+      "title": "虎丘记",
+      "genre": "prose",
+      "count": 15,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "黄宗羲",
+      "title": "过云木冰记",
+      "genre": "prose",
+      "count": 12,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "袁枚",
+      "title": "随园记",
+      "genre": "prose",
+      "count": 23,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "王士祯",
+      "title": "红桥游记",
+      "genre": "prose",
+      "count": 12,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "沈德潜",
+      "title": "游虞山记",
+      "genre": "prose",
+      "count": 25,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "author": "陶渊明",
+      "title": "桃花源记",
+      "genre": "prose",
+      "count": 12,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "周敦颐",
+      "title": "爱莲说",
+      "genre": "prose",
+      "count": 4,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "张岱",
+      "title": "湖心亭看雪",
+      "genre": "prose",
+      "count": 13,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "陶渊明",
+      "title": "五柳先生传",
+      "genre": "prose",
+      "count": 2,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "袁宏道",
+      "title": "满井游记",
+      "genre": "prose",
+      "count": 10,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "诸葛亮",
+      "title": "前出师表",
+      "genre": "prose",
+      "count": 26,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "王安石",
+      "title": "游褒禅山记",
+      "genre": "prose",
+      "count": 22,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "贾谊",
+      "title": "过秦论",
+      "genre": "prose",
+      "count": 65,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "苏轼",
+      "title": "石钟山记",
+      "genre": "prose",
+      "count": 26,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "司马迁",
+      "title": "五帝本纪赞",
+      "genre": "prose",
+      "count": 11,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "司马迁",
+      "title": "项羽本纪赞",
+      "genre": "prose",
+      "count": 7,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "司马迁",
+      "title": "孔子世家赞",
+      "genre": "prose",
+      "count": 5,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "司马迁",
+      "title": "外戚世家序",
+      "genre": "prose",
+      "count": 13,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "司马迁",
+      "title": "伯夷列传",
+      "genre": "prose",
+      "count": 34,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "司马迁",
+      "title": "屈原列传",
+      "genre": "prose",
+      "count": 53,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "司马迁",
+      "title": "酷吏列传序",
+      "genre": "prose",
+      "count": 9,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "司马迁",
+      "title": "游侠列传序",
+      "genre": "prose",
+      "count": 29,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "司马迁",
+      "title": "货殖列传序",
+      "genre": "prose",
+      "count": 28,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "司马迁",
+      "title": "太史公自序",
+      "genre": "prose",
+      "count": 30,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "诸葛亮",
+      "title": "后出师表",
+      "genre": "prose",
+      "count": 33,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "欧阳修",
+      "title": "五代史伶官传序",
+      "genre": "prose",
+      "count": 11,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "欧阳修",
+      "title": "丰乐亭记",
+      "genre": "prose",
+      "count": 27,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "龚自珍",
+      "title": "病梅馆记",
+      "genre": "prose",
+      "count": 14,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "归有光",
+      "title": "项脊轩志",
+      "genre": "prose",
+      "count": 32,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "袁枚",
+      "title": "祭妹文",
+      "genre": "prose",
+      "count": 35,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "苏轼",
+      "title": "记承天寺夜游 / 记承天夜游",
+      "genre": "prose",
+      "count": 4,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "王羲之",
+      "title": "兰亭集序 / 兰亭序",
+      "genre": "prose",
+      "count": 1,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "author": "司马迁",
+      "title": "报任少卿书 / 报任安书",
+      "genre": "prose",
+      "count": 104,
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    }
+  ],
+  "examples": [
+    {
+      "id": "essential_5",
+      "content": "墙角数枝梅",
+      "changed": {
+        "title": {
+          "before": "梅花",
+          "after": "梅花 / 梅"
+        }
+      },
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "id": "essential_6",
+      "content": "凌寒独自开",
+      "changed": {
+        "title": {
+          "before": "梅花",
+          "after": "梅花 / 梅"
+        }
+      },
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "id": "essential_7",
+      "content": "遥知不是雪",
+      "changed": {
+        "title": {
+          "before": "梅花",
+          "after": "梅花 / 梅"
+        }
+      },
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "id": "essential_8",
+      "content": "为有暗香来",
+      "changed": {
+        "title": {
+          "before": "梅花",
+          "after": "梅花 / 梅"
+        }
+      },
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry8.json"
+    },
+    {
+      "id": "line_95",
+      "content": "驿外断桥边",
+      "changed": {
+        "title": {
+          "before": "卜算子",
+          "after": "卜算子·咏梅"
+        }
+      },
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry6.json"
+    },
+    {
+      "id": "line_96",
+      "content": "寂寞开无主",
+      "changed": {
+        "title": {
+          "before": "卜算子",
+          "after": "卜算子·咏梅"
+        }
+      },
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry6.json"
+    },
+    {
+      "id": "line_97",
+      "content": "已是黄昏独自愁",
+      "changed": {
+        "title": {
+          "before": "卜算子",
+          "after": "卜算子·咏梅"
+        },
+        "tags": {
+          "before": [
+            "夜",
+            "思乡"
+          ],
+          "after": [
+            "夜"
+          ]
+        }
+      },
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry6.json"
+    },
+    {
+      "id": "line_98",
+      "content": "更着风和雨",
+      "changed": {
+        "title": {
+          "before": "卜算子",
+          "after": "卜算子·咏梅"
+        },
+        "ping_ze_pattern": {
+          "before": "11110",
+          "after": "10110"
+        }
+      },
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry6.json"
+    },
+    {
+      "id": "line_99",
+      "content": "无意苦争春",
+      "changed": {
+        "title": {
+          "before": "卜算子",
+          "after": "卜算子·咏梅"
+        }
+      },
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry6.json"
+    },
+    {
+      "id": "line_100",
+      "content": "一任群芳妒",
+      "changed": {
+        "title": {
+          "before": "卜算子",
+          "after": "卜算子·咏梅"
+        }
+      },
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry6.json"
+    },
+    {
+      "id": "line_101",
+      "content": "零落成泥碾作尘",
+      "changed": {
+        "title": {
+          "before": "卜算子",
+          "after": "卜算子·咏梅"
+        }
+      },
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry6.json"
+    },
+    {
+      "id": "line_102",
+      "content": "只有香如故",
+      "changed": {
+        "title": {
+          "before": "卜算子",
+          "after": "卜算子·咏梅"
+        },
+        "tags": {
+          "before": [
+            "思乡"
+          ],
+          "after": []
+        }
+      },
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry6.json"
+    },
+    {
+      "id": "line_109",
+      "content": "正故国晚秋",
+      "changed": {
+        "title": {
+          "before": "桂枝香",
+          "after": "桂枝香·金陵怀古"
+        }
+      },
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "id": "line_110",
+      "content": "归帆去棹残阳里",
+      "changed": {
+        "title": {
+          "before": "桂枝香",
+          "after": "桂枝香·金陵怀古"
+        },
+        "tags": {
+          "before": [
+            "舟",
+            "思乡"
+          ],
+          "after": [
+            "舟"
+          ]
+        }
+      },
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "id": "line_111",
+      "content": "叹门外楼头",
+      "changed": {
+        "title": {
+          "before": "桂枝香",
+          "after": "桂枝香·金陵怀古"
+        }
+      },
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "id": "line_112",
+      "content": "六朝旧事随流水",
+      "changed": {
+        "title": {
+          "before": "桂枝香",
+          "after": "桂枝香·金陵怀古"
+        }
+      },
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "id": "line_115",
+      "content": "一派秋声入寥廓",
+      "changed": {
+        "title": {
+          "before": "千秋岁引",
+          "after": "千秋岁引·秋景"
+        }
+      },
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "id": "line_116",
+      "content": "东归燕从海上去",
+      "changed": {
+        "title": {
+          "before": "千秋岁引",
+          "after": "千秋岁引·秋景"
+        },
+        "tags": {
+          "before": [
+            "水",
+            "鸟",
+            "思乡"
+          ],
+          "after": [
+            "水",
+            "鸟"
+          ]
+        }
+      },
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "id": "line_117",
+      "content": "南来雁向沙头落",
+      "changed": {
+        "title": {
+          "before": "千秋岁引",
+          "after": "千秋岁引·秋景"
+        }
+      },
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    },
+    {
+      "id": "line_118",
+      "content": "无奈被些名利缚",
+      "changed": {
+        "title": {
+          "before": "千秋岁引",
+          "after": "千秋岁引·秋景"
+        }
+      },
+      "evidence": "https://github.com/muskjobstao/haitangshishe/blob/90b53bfab67275e8b2e8e94807515b77fc17f2ba/data/aio/LCPoetry5.json"
+    }
+  ],
+  "dictionaries": [
+    {
+      "file": "scripts/_assets/Word_Tune.json",
+      "sha256": "35fb13316cc632de42e91ebb212cae559a5040e826f09f1e3f6c76624af4822c"
+    },
+    {
+      "file": "scripts/_assets/Pingshui_Rhyme.json",
+      "sha256": "683fd3e94c345e9be25bce7bb2fa2e638a1e70e36e42585eecc4ab2a1e3a29cb"
+    }
+  ]
+}

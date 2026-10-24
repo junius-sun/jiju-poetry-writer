@@ -1,0 +1,61 @@
+{
+  "policy": "verified-single-source-v1",
+  "inputCount": 561809,
+  "outputCount": 561809,
+  "excludedCount": 0,
+  "excludedReasons": {},
+  "simplifiedLines": 0,
+  "removedReferences": 0,
+  "duplicateRows": 0,
+  "metadata": {
+    "format": "jiju-corpus",
+    "version": 2,
+    "count": 561809,
+    "sources": 71362,
+    "tagSets": 937,
+    "jsonBytes": 47824977,
+    "gzipBytes": 16436375,
+    "sha256": "a54423cfa7031d604708ae88f04a054c03535512301cfa5179ded3802b64ba30"
+  },
+  "inventory": {
+    "count": 561809,
+    "sourceGroups": 74975,
+    "authors": 4969,
+    "lengths": {
+      "5": 329074,
+      "7": 232735
+    },
+    "dynasties": {
+      "宋": 109090,
+      "唐": 367770,
+      "汉": 3961,
+      "清": 5517,
+      "明": 2847,
+      "元": 64765,
+      "魏晋": 3119,
+      "五代": 147,
+      "隋": 162,
+      "南北朝": 2127,
+      "金": 435,
+      "近现代": 43,
+      "先秦": 1813,
+      "未标注": 13
+    }
+  },
+  "snapshots": [
+    {
+      "path": "corpus-source-backups/4940c819822644ddad36a023d93d5261cecf9af4b5094373e0eb156dc1101e0f.json.gz",
+      "sha256": "4940c819822644ddad36a023d93d5261cecf9af4b5094373e0eb156dc1101e0f",
+      "inputCount": 696404,
+      "excludedCount": 134595,
+      "excludedReasons": {
+        "unverified": 3220,
+        "text-matched": 38766,
+        "ambiguous": 92435,
+        "conflict": 174
+      },
+      "simplifiedLines": 156423,
+      "removedReferences": 177555
+    }
+  ]
+}

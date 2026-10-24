@@ -1,7 +1,13 @@
 /**
  * 古诗集句工程 - 近体诗格律校验与智能推荐引擎 (MetricalEngine)
- * 实现五言绝句/七言绝句的严密平仄校验、平水韵 100% 相同押韵保证、秒级轻量起句与详细格式错误指导。
+ * 五/七言平韵绝句的严格模式：基本句式、孤平（允许本句自救）、三平尾、同韵与集句来源。
+ * 校验基于语料的平仄/韵部标注，不处理首句借韵、其他特殊拗救或多音字语境消歧。
  */
+
+import { poemSourceKey } from '../data/source_helpers.js';
+import { PING_RHYME_GROUPS } from './rhymes.js';
+
+const PING_RHYMES = new Set(PING_RHYME_GROUPS.map(group => group.id));
 
 export class MetricalEngine {
   constructor(database = []) {
@@ -9,7 +15,7 @@ export class MetricalEngine {
   }
 
   /**
-   * 判定某个位置是否属于“一三五不论”的容忍位置 (1-indexed)
+   * 标识有条件可变的位置；完整判定还须避免孤平和三平尾 (1-indexed)。
    */
   isFlexiblePosition(index, totalLength) {
     if (totalLength === 5) {
@@ -23,39 +29,143 @@ export class MetricalEngine {
   /**
    * 严格校验平仄格式是否符合近体诗标准 (二四六分明)
    */
-  isPatternStrictlyValid(actualPattern, expectedPattern) {
-    if (!actualPattern || !expectedPattern || actualPattern.length !== expectedPattern.length) {
-      return false;
+  getPatternErrors(actualPattern, expectedPattern) {
+    if (typeof actualPattern !== 'string' || typeof expectedPattern !== 'string' ||
+        ![5, 7].includes(actualPattern.length) || actualPattern.length !== expectedPattern.length ||
+        !/^[01]+$/.test(actualPattern) || !/^[01]+$/.test(expectedPattern)) {
+      return [{ code: 'PATTERN_DATA', message: '平仄标注缺失、长度不符或含未知声调。' }];
     }
 
+    const errors = [];
     const len = actualPattern.length;
+    const wrongPositions = [];
     for (let i = 0; i < len; i++) {
       const pos1Indexed = i + 1;
       const isFlexible = this.isFlexiblePosition(pos1Indexed, len);
 
       if (!isFlexible && actualPattern[i] !== expectedPattern[i]) {
-        return false;
+        wrongPositions.push(pos1Indexed);
       }
     }
-    return true;
+    if (wrongPositions.length) {
+      errors.push({ code: 'PATTERN_MISMATCH', message: `第 ${wrongPositions.join('、')} 字平仄不符，应符合 ${expectedPattern}（1 为平，0 为仄）。` });
+    }
+    // 五言仄平仄仄平 / 七言末五字仄平仄仄平犯孤平；第三/第五字改平后的本句自救允许通过。
+    if (actualPattern.slice(-5) === '01001') {
+      errors.push({ code: 'LONE_PING', message: '犯孤平，请替换诗句或选择已完成本句自救的句子。' });
+    }
+    if (actualPattern.endsWith('111')) {
+      errors.push({ code: 'THREE_PING', message: '句尾连续三个平声，犯三平尾。' });
+    }
+    return errors;
+  }
+
+  isPatternStrictlyValid(actualPattern, expectedPattern) {
+    return this.getPatternErrors(actualPattern, expectedPattern).length === 0;
+  }
+
+  isKnownPingRhyme(group) {
+    return PING_RHYMES.has(group);
+  }
+
+  sourceKey(item) {
+    return poemSourceKey(item);
+  }
+
+  getLineErrors(item, targetLength, expectedPattern) {
+    if (!item || typeof item.content !== 'string') {
+      return [{ code: 'LINE_DATA', message: '诗句数据缺失。' }];
+    }
+    const errors = [];
+    if (item.quality_flags?.includes('TONE_UNKNOWN')) {
+      errors.push({ code: 'TONE_UNKNOWN', message: '古音存在字典未收录的字，不能严格判定此句，请另选或核对。' });
+    }
+    if (item.quality_flags?.includes('SOURCE_CONFLICT')) {
+      errors.push({ code: 'SOURCE_CONFLICT', message: '此句出处与上游原文存在署名冲突，核实前不可选用。' });
+    }
+    if ((item.source && item.source.status !== 'matched') ||
+        item.quality_flags?.some(flag => ['SOURCE_AMBIGUOUS', 'SOURCE_UNVERIFIED'].includes(flag))) {
+      errors.push({ code: 'SOURCE_UNVERIFIED', message: '此句主出处尚未核对，暂不参与选句，请另选一句。' });
+    }
+    if (['prose', 'fu'].includes(item.source?.genre)) {
+      errors.push({ code: 'NON_POETIC', message: '此条属于古文或赋的切句，不作为近体诗集句候选。' });
+    }
+    if (item.length !== targetLength || Array.from(item.content).length !== targetLength) {
+      errors.push({ code: 'LINE_LENGTH', message: `必须选择 ${targetLength} 言诗句，不能混用不同字数。` });
+    }
+    if (!item.id || typeof item.author !== 'string' || !item.author.trim() ||
+        typeof item.title !== 'string' || !item.title.trim()) {
+      errors.push({ code: 'SOURCE_DATA', message: '诗句编号或作者、篇名缺失，无法确认出处。' });
+    }
+    const pattern = item.ping_ze_pattern;
+    if (typeof pattern !== 'string' || pattern.length !== targetLength || !/^[01]+$/.test(pattern)) {
+      errors.push({ code: 'PATTERN_DATA', message: '平仄标注缺失、长度不符或含未知声调。' });
+    } else {
+      const tone = pattern.endsWith('1') ? '平' : '仄';
+      if (item.end_tone !== tone) {
+        errors.push({ code: 'END_TONE', message: '尾字声调与平仄标注矛盾。' });
+      }
+      if (expectedPattern) errors.push(...this.getPatternErrors(pattern, expectedPattern));
+      if (tone === '平' && !this.isKnownPingRhyme(item.rhyme_group)) {
+        errors.push({ code: 'UNKNOWN_RHYME', message: '平声韵部未明确，不能以“通用韵”判定押韵。' });
+      }
+      if (tone === '仄' && item.rhyme_group !== '仄声') {
+        errors.push({ code: 'RHYME_DATA', message: '仄声尾字的韵部标注不一致。' });
+      }
+    }
+    return errors;
+  }
+
+  /** 完整诗或创作中的前缀共用此校验；通关只接受完整且无错误的结果。 */
+  validatePoem(lines = [], options = {}) {
+    const errors = [];
+    const add = (code, message, index) => errors.push({ code, message, index });
+    if (!Array.isArray(lines)) {
+      return { isValid: false, complete: false, errors: [{ code: 'LINE_DATA', message: '诗句列表无效。' }] };
+    }
+    const length = options.length ?? lines[0]?.length ?? 5;
+    const complete = lines.length === 4;
+    if (![5, 7].includes(length)) add('POEM_LENGTH', '仅支持五言或七言绝句。');
+    if (lines.length > 4 || (options.requireComplete !== false && !complete)) {
+      add('LINE_COUNT', '绝句须恰好四句。');
+    }
+    const patterns = this.getStandardQuatrainPatterns(lines[0]);
+    const ids = new Set(), contents = new Set(), sources = new Set();
+    let requiredRhyme = options.targetRhyme || null;
+    if (requiredRhyme && !this.isKnownPingRhyme(requiredRhyme)) {
+      add('UNKNOWN_RHYME', '目标韵部必须是明确的平水韵平声韵部。');
+    }
+    for (const [index, item] of lines.entries()) {
+      this.getLineErrors(item, length, patterns[index]).forEach(error => add(error.code, error.message, index));
+      if (!item || typeof item.content !== 'string') continue;
+      if (ids.has(item.id) || contents.has(item.content)) add('DUPLICATE_LINE', '不能重复选用同一句诗。', index);
+      ids.add(item.id); contents.add(item.content);
+      const source = this.sourceKey(item);
+      if (sources.has(source)) add('DUPLICATE_SOURCE', '本项目要求四句分别出自不同原诗，请另选篇目。', index);
+      sources.add(source);
+      if (options.singleAuthorMode && item.author !== lines[0]?.author) {
+        add('AUTHOR_MISMATCH', '集杜模式须与首句出自同一位作者。', index);
+      }
+      const isRhymeLine = index === 1 || index === 3 || (index === 0 && item.end_tone === '平');
+      if (isRhymeLine) {
+        if (item.end_tone !== '平') add('RHYME_TONE', '入韵句必须以平声收尾。', index);
+        if (this.isKnownPingRhyme(item.rhyme_group)) {
+          if (requiredRhyme && item.rhyme_group !== requiredRhyme) {
+            add('RHYME_MISMATCH', `入韵句须同押《${requiredRhyme}》，当前为《${item.rhyme_group}》。`, index);
+          }
+          requiredRhyme ||= item.rhyme_group;
+        }
+      }
+    }
+    return { isValid: errors.length === 0, complete, errors };
   }
 
   /**
-   * 极速轻量判定一条诗句是否符合绝句【起句（首句）】格律要求（O(1) 瞬间完成，绝不卡顿）
+   * 判定诗句能否作为五/七言平韵绝句的首句。
    */
   isValidQuatrainStarterLine(item, targetLength = 5) {
-    if (!item || item.length !== targetLength) return false;
-    const p = item.ping_ze_pattern;
-    if (!p) return false;
-
-    if (targetLength === 5) {
-      const valid5 = ["00110", "00011", "11100", "11001"];
-      return valid5.some(exp => this.isPatternStrictlyValid(p, exp));
-    } else if (targetLength === 7) {
-      const valid7 = ["0011100", "0011001", "1100110", "1100011"];
-      return valid7.some(exp => this.isPatternStrictlyValid(p, exp));
-    }
-    return false;
+    const expected = this.getStandardQuatrainPatterns(item)[0];
+    return [5, 7].includes(targetLength) && !!expected && this.getLineErrors(item, targetLength, expected).length === 0;
   }
 
   /**
@@ -90,6 +200,10 @@ export class MetricalEngine {
    * 推算整首诗标准近体诗绝句平仄格式 (4句)
    */
   getStandardQuatrainPatterns(firstLine) {
+    if (!firstLine || ![5, 7].includes(firstLine.length) ||
+        typeof firstLine.ping_ze_pattern !== 'string' ||
+        firstLine.ping_ze_pattern.length !== firstLine.length ||
+        !/^[01]+$/.test(firstLine.ping_ze_pattern)) return [];
     const len = firstLine.length;
     const p = firstLine.ping_ze_pattern;
     const isFirstLineRhyme = firstLine.end_tone === "平";
@@ -122,79 +236,44 @@ export class MetricalEngine {
     return patterns;
   }
 
+  /** 为推荐和搜索预先计算相同的硬性约束，避免逐条重复校验整个前缀。 */
+  createCandidateFilter(currentLines, targetLength, options = {}) {
+    if (!this.validatePoem(currentLines, { ...options, length: targetLength, requireComplete: false }).isValid ||
+        currentLines.length >= 4) return () => false;
+    const index = currentLines.length;
+    const expected = this.getStandardQuatrainPatterns(currentLines[0])[index];
+    const ids = new Set(currentLines.map(line => line.id));
+    const contents = new Set(currentLines.map(line => line.content));
+    const sources = new Set(currentLines.map(line => this.sourceKey(line)));
+    const usedChars = new Set(currentLines.flatMap(line => Array.from(line.content)));
+    const author = options.singleAuthorMode ? currentLines[0]?.author : null;
+    const rhyme = options.targetRhyme || currentLines.find(line => line.end_tone === '平')?.rhyme_group;
+    return item => {
+      if (!item || item.length !== targetLength || ids.has(item.id) || contents.has(item.content)) return false;
+      if (author && item.author !== author) return false;
+      if (sources.has(this.sourceKey(item))) return false;
+      if (options.avoidCharOverlap && Array.from(item.content || '').some(char => usedChars.has(char))) return false;
+      const pattern = index === 0 ? this.getStandardQuatrainPatterns(item)[0] : expected;
+      if (!pattern || this.getLineErrors(item, targetLength, pattern).length) return false;
+      if (index === 1 || index === 3 || (index === 0 && item.end_tone === '平')) {
+        if (item.end_tone !== '平' || (rhyme && item.rhyme_group !== rhyme)) return false;
+      }
+      return true;
+    };
+  }
+
   /**
-   * 核心 AI 推荐算法：构建完整候选池 (带单字零重复回避与 100% 押韵保证)
+   * 推荐候选池：严格合律、明确同韵、不同原诗，并回避重复汉字。
    * 返回按分数降序、同分组内洗牌的候选数组，供「换一批」分页取用。
-   * @param {object} options - { singleAuthorMode, poolLimit }
+   * @param {object} options - { singleAuthorMode, targetRhyme, poolLimit }
    */
   getSmartCandidatePool(currentLines = [], targetLength = 5, options = {}) {
-    const targetIndex = currentLines.length;
-
-    if (targetIndex >= 4) return [];
-
-    const chosenIds = new Set(currentLines.map(l => l.id));
+    if (!Array.isArray(currentLines) || currentLines.some(line => !line || typeof line.content !== 'string')) return [];
+    const isCandidate = this.createCandidateFilter(currentLines, targetLength, { ...options, avoidCharOverlap: true });
     const chosenAuthors = currentLines.map(l => l.author);
-    const prevTags = new Set(currentLines.flatMap(l => l.tags));
-    const usedCharsSet = new Set(currentLines.flatMap(l => Array.from(l.content)));
-
-    // 集杜（单家集句）模式：锁定首句作者，后续只推选同一名家之句
-    const singleAuthor = (options.singleAuthorMode && currentLines.length > 0)
-      ? currentLines[0].author
-      : null;
-
-    let expectedPattern = "";
-    let requiredRhymeGroup = null;
-
-    if (currentLines.length > 0) {
-      const firstLine = currentLines[0];
-      const standardPatterns = this.getStandardQuatrainPatterns(firstLine);
-      expectedPattern = standardPatterns[targetIndex];
-
-      const rhymingLine = currentLines.find(l => l.end_tone === "平" && l.rhyme_group && l.rhyme_group !== "仄声");
-      if (rhymingLine) {
-        requiredRhymeGroup = rhymingLine.rhyme_group;
-      }
-    }
-
-    const validCandidates = this.database.filter(item => {
-      if (item.length !== targetLength) return false;
-      if (chosenIds.has(item.id)) return false;
-      if (singleAuthor && item.author !== singleAuthor) return false;
-
-      // 单字零重复
-      const hasCharOverlap = Array.from(item.content).some(char => usedCharsSet.has(char));
-      if (hasCharOverlap) return false;
-
-      if (targetIndex === 0) {
-        if (!this.isValidQuatrainStarterLine(item, targetLength)) return false;
-      }
-
-      if (targetIndex === 1) {
-        if (item.end_tone !== "平" || !item.rhyme_group || item.rhyme_group === "仄声") return false;
-        if (requiredRhymeGroup && item.rhyme_group !== requiredRhymeGroup) {
-          return false;
-        }
-      }
-
-      if (targetIndex === 2) {
-        if (item.end_tone !== "仄") return false;
-      }
-
-      if (targetIndex === 3) {
-        if (item.end_tone !== "平") return false;
-        if (!requiredRhymeGroup || item.rhyme_group !== requiredRhymeGroup) {
-          return false;
-        }
-      }
-
-      if (expectedPattern && !singleAuthor) {
-        if (!this.isPatternStrictlyValid(item.ping_ze_pattern, expectedPattern)) {
-          return false;
-        }
-      }
-
-      return true;
-    });
+    const prevTags = new Set(currentLines.flatMap(l => l.tags || []));
+    const expectedPattern = this.getStandardQuatrainPatterns(currentLines[0])[currentLines.length];
+    const validCandidates = this.database.filter(isCandidate);
 
     const scored = validCandidates.map(item => {
       let fitScore = 65;
@@ -204,7 +283,7 @@ export class MetricalEngine {
         fitScore = 80;
       }
 
-      const sharedTags = item.tags.filter(t => prevTags.has(t));
+      const sharedTags = (item.tags || []).filter(t => prevTags.has(t));
       fitScore += sharedTags.length * 10;
 
       const isNewAuthor = !chosenAuthors.includes(item.author);
@@ -212,7 +291,10 @@ export class MetricalEngine {
 
       return {
         poetry: item,
-        score: Math.min(99, fitScore),
+        score: Math.max(0, Math.min(99, fitScore)
+          - (item.source && item.source.status !== 'matched' ? 12 : 0)
+          - (item.quality_flags?.includes('TONE_AMBIGUOUS') ? 5 : 0)
+          - (item.source?.genre === 'qu' ? 12 : 0)),
         sharedTags,
         isNewAuthor
       };
@@ -231,7 +313,7 @@ export class MetricalEngine {
         const r = Math.floor(Math.random() * (k + 1));
         [group[k], group[r]] = [group[r], group[k]];
       }
-      shuffled.push(...group);
+      for (const candidate of group) shuffled.push(candidate);
       i = j;
     }
 
@@ -262,60 +344,23 @@ export class MetricalEngine {
    * 通用检索
    */
   getRecommendations(currentLines = [], options = {}) {
+    if (!Array.isArray(currentLines) || currentLines.some(line => !line || typeof line.content !== 'string')) return [];
     const targetLength = options.length || (currentLines.length > 0 ? currentLines[0].length : 5);
     const targetIndex = currentLines.length;
 
     if (targetIndex >= 4) return [];
 
-    const chosenIds = new Set(currentLines.map(l => l.id));
     const chosenAuthors = currentLines.map(l => l.author);
-    const usedCharsSet = new Set(currentLines.flatMap(l => Array.from(l.content)));
-
-    // 集杜（单家集句）模式：锁定首句作者，后续只推选同一名家之句
-    const singleAuthor = (options.singleAuthorMode && currentLines.length > 0)
-      ? currentLines[0].author
-      : null;
-
-    let expectedPattern = "";
-    let requiredRhymeGroup = null;
-
-    if (currentLines.length > 0) {
-      const firstLine = currentLines[0];
-      const standardPatterns = this.getStandardQuatrainPatterns(firstLine);
-      expectedPattern = standardPatterns[targetIndex];
-
-      const rhymingLine = currentLines.find(l => l.end_tone === "平" && l.rhyme_group && l.rhyme_group !== "仄声");
-      if (rhymingLine) {
-        requiredRhymeGroup = rhymingLine.rhyme_group;
-      }
-    }
-
+    const expectedPattern = this.getStandardQuatrainPatterns(currentLines[0])[targetIndex];
+    const isCandidate = this.createCandidateFilter(currentLines, targetLength, {
+      ...options, avoidCharOverlap: !options.keyword
+    });
     const candidates = this.database.filter(item => {
-      if (item.length !== targetLength) return false;
-      if (chosenIds.has(item.id)) return false;
-      if (singleAuthor && item.author !== singleAuthor) return false;
-
-      if (!options.keyword) {
-        const hasCharOverlap = Array.from(item.content).some(char => usedCharsSet.has(char));
-        if (hasCharOverlap) return false;
-      }
-
-      if (options.keyword && !item.content.includes(options.keyword) && !item.tags.includes(options.keyword)) {
+      if (!item || typeof item.content !== 'string') return false;
+      if (options.keyword && !item.content.includes(options.keyword) && !(item.tags || []).includes(options.keyword)) {
         return false;
       }
-
-      if (targetIndex === 1 || targetIndex === 3) {
-        if (item.end_tone !== "平") return false;
-        if (requiredRhymeGroup && item.rhyme_group !== requiredRhymeGroup) {
-          return false;
-        }
-      }
-
-      if (targetIndex === 2) {
-        if (item.end_tone !== "仄") return false;
-      }
-
-      return true;
+      return isCandidate(item);
     });
 
     const scored = candidates.map(item => {
@@ -331,7 +376,7 @@ export class MetricalEngine {
 
       return {
         poetry: item,
-        score: fitScore,
+        score: Math.min(100, fitScore),
         isNewAuthor
       };
     });
@@ -343,78 +388,29 @@ export class MetricalEngine {
   /**
    * 评估全首集句诗合律度，并提供【格式错误的具体问题】与【针对性指导建议】
    */
-  evaluatePoem(lines = []) {
-    if (lines.length !== 4) {
-      return { score: 0, rank: "未完成", report: ["请集满 4 句绝句后再行评估。"] };
+  evaluatePoem(lines = [], options = {}) {
+    const validation = this.validatePoem(lines, { ...options, requireComplete: true });
+    if (Array.isArray(lines) && lines.length < 4) {
+      return { ...validation, score: 0, rank: '未完成', report: ['请集满 4 句绝句后再行评估。'] };
     }
-
-    const report = [];
-    let score = 100;
-    const firstLine = lines[0];
-    const standardPatterns = this.getStandardQuatrainPatterns(firstLine);
-
-    // 1. 逐句平仄格律诊断
-    lines.forEach((line, idx) => {
-      const exp = standardPatterns[idx];
-      const matchScore = this.calculatePatternMatchScore(line.ping_ze_pattern, exp);
-      if (matchScore < 80) {
-        score -= (100 - matchScore) * 0.25;
-        report.push(`❌ 【格式问题】第 ${idx + 1} 句《${line.title}》（${line.content}）关键字平仄失律。` + 
-                    `💡 【修改指导】建议替换该句，使二四六位置平仄严格对齐格式建议 ${exp}。`);
-      } else {
-        report.push(`✅ 【格式合律】第 ${idx + 1} 句平仄二四六分明，切合律调。`);
-      }
+    const report = validation.errors.map(error => {
+      const position = error.index === undefined ? '' : '第 ' + (error.index + 1) + ' 句：';
+      return '❌ 【校验问题】' + position + error.message;
     });
-
-    // 2. 粘对与押韵诊断
-    const line2 = lines[1];
-    const line3 = lines[2];
-    const line4 = lines[3];
-
-    // 粘律诊断 (第2句第2字与第3句第2字平仄须相同)
-    if (line2.ping_ze_pattern[1] !== line3.ping_ze_pattern[1]) {
-      score -= 15;
-      report.push(`⚠️ 【格式问题】第 3 句犯失粘！第 2 句第2字为[${line2.ping_ze_pattern[1] === '1' ? '平' : '仄'}]，而第 3 句第2字为[${line3.ping_ze_pattern[1] === '1' ? '平' : '仄'}]。` + 
-                  `💡 【修改指导】遵循“联间相粘”，建议挑选第 2 字平仄与第 2 句一致的出句。`);
+    if (validation.isValid) {
+      report.push('✅ 【标注合律】按语料标注，四句平仄、粘对、孤平及三平尾检查通过。');
+      report.push('✅ 【押韵合格】入韵句同押《平水韵·' + lines[1].rhyme_group + '》。');
+      report.push('✅ 【来源标识】四句按收录的出处标识未重复选句或原诗。');
+      if (new Set(lines.map(line => line.author)).size === 4) {
+        report.push('🏆 【作者多样】四句分别来自四位作者。');
+      }
     }
-
-    // 押韵诊断 (偶数句 2, 4 必须同韵部平声)
-    if (line2.end_tone !== "平" || line4.end_tone !== "平") {
-      score -= 30;
-      report.push("❌ 【格式大忌】偶数句（第 2 句或第 4 句）尾字未全押平声韵，违背近体诗绝句押韵基本规则！" + 
-                  "💡 【修改指导】请确保第 2 句与第 4 句尾字均为平声字。");
-    } else if (line2.rhyme_group !== line4.rhyme_group) {
-      score -= 25;
-      report.push(`❌ 【格式问题】押韵出韵！第 2 句属于《${line2.rhyme_group}》，而第 4 句属于《${line4.rhyme_group}》。` + 
-                  `💡 【修改指导】请点击右侧推选，锁定选择《${line2.rhyme_group}》同韵部的尾句。`);
-    } else {
-      report.push(`🎉 【押韵完美】偶数句严合《平水韵·${line2.rhyme_group}》，协同铿锵！`);
-    }
-
-    // 3. 作者多样性诊断
-    const authorsSet = new Set(lines.map(l => l.author));
-    if (authorsSet.size === 4) {
-      score += 5;
-      report.push("🏆 【名家荟萃】4 句诗完全出自 4 位不同唐宋大家！");
-    }
-
-    // 4. 同源（集句铁律）诊断：每句须出自不同原诗，不可从同一首诗中摘取多句
-    const sourceKeys = lines.map(l => `${l.author}《${l.title}》`);
-    const uniqueSources = new Set(sourceKeys);
-    const dupCount = lines.length - uniqueSources.size;
-    if (dupCount > 0) {
-      score -= Math.min(30, dupCount * 10);
-      report.push(`⚠️ 【集句铁律】检测到 ${dupCount} 句取自同一首原诗！集句须"断句取用、各出不同诗篇"，请从其他作品另选，方成"浑然天成"之境。`);
-    } else {
-      report.push("✅ 【来源合规】四句分别出自不同原诗，严守集句「断句取用」之本。");
-    }
-
-    score = Math.min(100, Math.max(0, Math.round(score)));
-
-    let rank = "丙等·初步成诗";
-    if (score >= 95) rank = "甲等·浑然天成";
-    else if (score >= 85) rank = "乙等·格律严整";
-
-    return { score, rank, report };
+    const toneReview = Array.isArray(lines) && lines.some(line => line?.quality_flags?.some(flag => ['TONE_AMBIGUOUS', 'RHYME_UNCERTAIN'].includes(flag)));
+    const sourceReview = Array.isArray(lines) && lines.some(line => line?.source && line.source.status !== 'matched');
+    if (toneReview) report.push('⚠️ 【古音待核】含多读字或多韵字，须结合语境核对；标注合律不代表读音已人工确认。');
+    if (sourceReview) report.push('⚠️ 【出处待核】部分句子尚未唯一匹配上游原文与署名，请查看每句的出处说明。');
+    // 分数仅表示规则检查结果；硬性错误不能被作者多样性等加分抵消。
+    const score = validation.isValid ? 100 : Math.max(0, Math.min(79, 100 - validation.errors.length * 15));
+    return { ...validation, score, rank: validation.isValid ? (toneReview || sourceReview ? '标注合律·仍需核对' : '格律检查通过') : '未合律·请调整', report };
   }
 }

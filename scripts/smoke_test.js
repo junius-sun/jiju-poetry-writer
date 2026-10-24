@@ -56,6 +56,7 @@ for (const len of [5, 7]) {
     const result = engine.evaluatePoem(poem);
     console.log(`  集句结果: ${poem.map(l => l.content).join(' / ')}`);
     console.log(`  评估: ${result.rank}，得分 ${result.score}`);
+    check(result.isValid, `${len}言自动集句未通过统一校验: ${JSON.stringify(result.errors)}`);
     // 偶数句押韵一致性
     check(poem[1].rhyme_group === poem[3].rhyme_group && poem[1].rhyme_group !== '仄声',
       `${len}言自动集句偶数句未押同韵`);
@@ -67,6 +68,23 @@ console.log('【3】关键词检索');
 const searchRes = engine.getRecommendations([], { length: 5, keyword: '明月' });
 check(searchRes.length > 0, '搜索“明月”无结果');
 console.log(`  “明月”五言检索命中: ${searchRes.length} 条`);
+
+// ============ 4. 集杜真实语料推荐须逐条严格合格 ============
+console.log('【4】集杜模式严格校验');
+const duStarter = POETRY_DATABASE.find(item => item.author === '杜甫' && engine.isValidQuatrainStarterLine(item, 7));
+check(Boolean(duStarter), '杜甫缺少合法七言起句');
+if (duStarter) {
+  const options = { singleAuthorMode: true };
+  const pool = engine.getSmartCandidatePool([duStarter], 7, options);
+  check(pool.length > 0, '集杜模式没有合法续句');
+  for (const candidate of pool) {
+    const result = engine.validatePoem([duStarter, candidate.poetry], {
+      ...options, length: 7, requireComplete: false
+    });
+    check(result.isValid, `集杜候选失律: ${candidate.poetry.content}`);
+  }
+  console.log(`  首句: ${duStarter.content} | ${pool.length} 条候选均已逐条校验`);
+}
 
 console.log(failures === 0 ? '\n✅ 全部冒烟测试通过' : `\n❌ 共 ${failures} 项失败`);
 process.exit(failures === 0 ? 0 : 1);

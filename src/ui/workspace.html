@@ -1,0 +1,591 @@
+
+  <a class="skip-link" href="#main-content">跳至主要内容</a>
+  <canvas id="ink-universe" aria-hidden="true"></canvas>
+  <!-- 头部导航与诗意 Header -->
+  <header class="app-header">
+    <div class="header-inner">
+      <a class="logo-area" href="#home" data-home aria-label="诗境集句首页">
+        <img class="logo-stamp" src="assets/brand/jiju-seal.svg" width="34" height="34" alt="" aria-hidden="true">
+        <div class="title-group">
+          <h1>诗境集句</h1>
+          <p class="subtitle">THE POETRY ATELIER</p>
+        </div>
+      </a>
+
+      <nav class="nav-tabs" aria-label="主导航">
+        <button class="nav-tab active" data-tab="assembly" aria-current="page">
+          <span class="nav-index">01</span> 自由集句
+        </button>
+        <button class="nav-tab" data-tab="puzzle">
+          <span class="nav-index">02</span> 飞花闯关
+        </button>
+        <button class="nav-tab" data-tab="card">
+          <span class="nav-index">03</span> 水墨诗牌
+        </button>
+        <button class="nav-tab" data-tab="pingshui">
+          <span class="nav-index">04</span> 诗词入门
+        </button>
+      </nav>
+      <button id="motion-toggle" class="motion-toggle" data-independent aria-pressed="true"><span class="live-dot"></span><span>动效开启</span></button>
+    </div>
+  </header>
+
+  <p id="corpus-load-status" class="corpus-load-status" role="status" aria-live="polite">正在加载诗句，请稍候…</p>
+
+  <!-- 主体工作区 -->
+  <main class="app-main" id="main-content" tabindex="-1">
+
+    <!-- ==================== 1. 自由集句模块 (Free Assembly) ==================== -->
+    <section id="tab-assembly" class="tab-content active">
+      <header class="song-workspace-bar workspace-page-heading"><h2>自由集句</h2>
+      <nav class="assembly-stepper" aria-label="集句创作步骤">
+        <button type="button" data-assembly-step="direction"><span>一</span> 素材与 AI</button>
+        <button type="button" data-assembly-step="compose" aria-current="step"><span>二</span> 选句成诗</button>
+        <button type="button" data-atelier-tab="card"><span>三</span> 制作诗牌</button>
+      </nav>
+      </header><div class="song-workspace">
+      <section class="poem-settings" aria-label="诗体与押韵设定">
+        <div class="song-material-entry"><button type="button" class="btn btn-primary song-material-button" data-assembly-step="direction" aria-controls="assembly-direction"><span>添加素材 · AI 设置</span><span aria-hidden="true">→</span></button><p>文字、文件、图片均可。</p></div>
+        <details class="song-settings-fold" id="song-settings-fold" open><summary>创作设定 <span id="song-compact-settings-label">五言 · 自动定韵</span></summary><div class="song-settings-content">
+        <h3>创作设定</h3><span class="song-field-label">诗体</span>
+        <div class="length-selector"><button class="btn-toggle active" data-length="5" aria-pressed="true">五言绝句</button><button class="btn-toggle" data-length="7" aria-pressed="false">七言绝句</button></div>
+        <label for="rhyme-select">押韵<select id="rhyme-select" disabled><option value="">自动定韵 · 随首个入韵句</option></select></label>
+        <details class="song-rhyme-note"><summary>押韵规则</summary>
+        <p id="poem-settings-status" role="status">第二、四句同押平声韵；首句如入韵，也须同韵。</p>
+        <button class="text-button" data-atelier-tab="pingshui">了解平水韵与诗体 →</button>
+        </details><div id="settings-conflict" hidden><p id="settings-conflict-text"></p><button class="btn btn-secondary btn-sm" id="apply-settings-change">按新设定重选</button><button class="text-button" id="cancel-settings-change">保留原设定</button></div>
+        <details class="song-intent"><summary>当前创作方向</summary><p id="compose-context-summary">未限定主题，可以先按韵部选句</p></details>
+        <p class="song-setting-footnote">选定的韵部同时用于<br>AI 推荐与手动选句。</p>
+        </div></details>
+      </section>
+      <div class="song-views">
+      <section id="assembly-direction" data-assembly-panel="direction" aria-label="创作方向">
+      <div class="inspiration-workspace">
+      <section class="creative-materials" id="creative-materials" aria-labelledby="material-title">
+        <div class="material-header"><div><span class="eyebrow">A SPARK OF INSPIRATION</span><h2 id="material-title">创作素材</h2></div><span class="material-connection" data-ai-connection>正在读取模型配置…</span></div>
+        <p class="material-description">写下你想表达的主题。</p>
+        <div class="material-tabs" aria-label="创作输入方式">
+          <button class="material-tab active" data-material-mode="text" data-independent aria-pressed="true">文字输入 <span>写下心意</span></button>
+          <button class="material-tab" data-material-mode="document" data-independent aria-pressed="false">文件导入 <span>从文中取意</span></button>
+          <button class="material-tab" data-material-mode="image" data-independent aria-pressed="false">图片导入 <span>借景寄情</span></button>
+        </div>
+        <div data-material-panel="text"></div>
+        <div data-material-panel="document" hidden>
+          <input id="material-file-input" type="file" accept=".txt,.md,.markdown,.pdf,.docx" multiple hidden data-independent>
+          <button class="material-drop" id="document-drop" data-independent><span class="drop-mark" aria-hidden="true">文</span><span><strong>选择文件，或将文件拖到这里</strong><small>TXT / Markdown / PDF / Word（.docx） · 单个不超过 10 MB</small></span><span aria-hidden="true">↗</span></button>
+          <p class="material-hint">正文在本地提取，导入后可编辑。PDF 支持最多 50 页；扫描件可作为图片导入。</p>
+        </div>
+        <div data-material-panel="image" hidden>
+          <input id="material-image-input" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" multiple hidden data-independent>
+          <button class="material-drop" id="image-drop" data-independent><span class="drop-mark" aria-hidden="true">图</span><span><strong>选择照片、画作或文字截图</strong><small>JPG / PNG / WebP · 可拖入图片 · 单张不超过 10 MB</small></span><span aria-hidden="true">↗</span></button>
+          <p class="material-hint">选择“看图取意”或“识别文字”，并补充希望表达的情绪。图片理解需连接视觉模型。</p>
+        </div>
+        <div class="intent-text-field"><div><label for="creative-intent-input">创作心意</label><span id="intent-char-count">0 / 4000</span></div><textarea id="creative-intent-input" rows="3" maxlength="4000" placeholder="例如：写春夜江边的孤独，清冷一点，但结尾留一些希望。"></textarea></div>
+        <div id="material-list" class="material-list" hidden></div>
+        <div class="material-footer"><div><span id="material-state">待整理</span><span id="material-count">0 / 6 个附件</span><p id="material-status" role="status" aria-live="polite">素材保留在当前页面，导入时不会上传。</p></div><div class="material-actions"><button class="btn btn-outline" id="btn-clear-materials" data-independent disabled>清空</button><button class="btn btn-primary" id="btn-save-materials" data-independent disabled>保存创作素材</button></div></div>
+      </section>
+      <section class="ai-workbench" aria-labelledby="ai-heading">
+        <div class="ai-section-heading"><div><span class="eyebrow">A POETIC COMPANION</span><h2 id="ai-heading">AI 选句</h2></div><span id="ai-model-label">等待配置</span></div>
+        <details class="ai-settings" id="ai-settings">
+          <summary>配置 AI 模型</summary>
+          <form id="ai-config-form">
+            <p class="ai-hint">填写兼容 OpenAI 的 API 地址与模型。</p>
+            <div class="ai-config-grid">
+              <label>API 根地址<input name="baseUrl" type="url" data-independent required placeholder="https://api.openai.com/v1"></label>
+              <label>文字模型<input name="model" data-independent required placeholder="填写服务提供的模型名称"></label>
+              <label>图片模型（可选）<input name="visionModel" data-independent placeholder="留空使用文字模型"></label>
+              <label>API 密钥<input name="apiKey" type="password" data-independent autocomplete="off" spellcheck="false" placeholder="暂时可留空"></label>
+            </div>
+            <label class="ai-checkbox"><input name="vision" type="checkbox" data-independent>启用图片输入（模型须支持视觉）</label>
+            <details class="ai-advanced"><summary>接口兼容选项</summary><div class="ai-config-grid">
+              <label>结构化输出<select name="outputMode"><option value="schema">JSON Schema（严格）</option><option value="json">JSON Object（兼容）</option></select></label>
+              <label>输出长度参数<select name="tokenField"><option value="max_completion_tokens">max_completion_tokens</option><option value="max_tokens">max_tokens（旧接口）</option></select></label>
+              <label>模型等待时间（秒）<input name="timeoutSeconds" type="number" min="30" max="300" step="1" value="120" data-independent required></label>
+              <label>思考模式<select name="thinkingMode"><option value="auto">自动（豆包 Seed 2 系列优先快速响应）</option><option value="disabled">关闭深度思考（豆包 / OpenRouter）</option><option value="enabled">启用深度思考（较慢）</option></select></label>
+            </div><p class="ai-hint">默认等待 120 秒，可设为 30–300 秒。自动模式下，豆包 Seed 2 系列关闭深度思考，其余模型沿用服务默认策略；深度思考会增加耗时。</p></details>
+            <p class="ai-hint" id="ai-key-note">密钥保存在本机服务端，不写入浏览器缓存或代码。留空会保留已存密钥。</p>
+            <div class="ai-actions"><button class="btn btn-primary" type="submit" data-independent id="ai-save-config">保存配置</button><button class="btn btn-outline" type="button" data-independent id="ai-test">测试连接</button><button class="text-button" type="button" data-independent data-ai-cancel="test" hidden>取消测试</button><button class="text-button" type="button" data-independent id="ai-clear-key">移除密钥</button></div>
+          </form>
+          <p id="ai-config-status" class="ai-status" role="status" aria-live="polite">正在读取配置…</p>
+        </details>
+        <button class="btn btn-outline btn-sm" id="ai-reconnect" data-independent type="button" hidden>重新连接</button>
+        <div id="ai-activity" class="ai-inline-actions" role="status" hidden><span id="ai-activity-text" class="ai-hint"></span><button class="text-button" id="ai-cancel-current" type="button" data-independent>取消当前任务</button></div>
+        <div class="ai-direction-heading"><div><p class="ai-hint">按心意与韵部推荐诗句。点击后，素材会发送至已配置的模型服务。</p></div><div class="ai-inline-actions"><button class="btn btn-primary" id="ai-analyze" data-independent disabled>AI 推荐诗句</button><button class="text-button" data-ai-cancel="recommend" data-independent hidden>取消推荐</button></div></div>
+        <p class="ai-status" id="ai-analysis-status" role="status" aria-live="polite">配置模型并保存素材后，即可开始。</p>
+        <div id="ai-analysis" hidden><label class="ai-brief-label" for="ai-brief">创作方向 <span>可以修改，后续推荐会采用你的修改</span></label><textarea id="ai-brief" maxlength="6000" rows="3" placeholder="AI 将在这里整理创作方向"></textarea><div id="ai-analysis-details"></div></div>
+      </section>
+      </div>
+      <div class="direction-actions"><p>可以先让 AI 按心意和韵部找句，也可以直接进入诗库自己挑选。</p><button class="btn btn-outline" id="btn-manual-compose">自己选诗句 →</button></div>
+      </section>
+      <section id="assembly-compose" data-assembly-panel="compose" aria-label="选句成诗" hidden>
+      <nav class="song-mobile-tabs" aria-label="集句工作区"><button data-song-pane="poem" aria-pressed="true">诗稿 <span id="song-mobile-count">0 / 4</span></button><button data-song-pane="pick" aria-pressed="false">选下一句 →</button></nav>
+      <p class="song-selection-status" id="song-selection-status" role="status" aria-live="polite"></p>
+      <div class="assembly-layout">
+
+        <!-- 左侧：创作面板与诗架 -->
+        <div class="creative-panel">
+          <div class="workspace-heading"><h3>我的集句</h3><span id="poem-progress" role="status">落笔之前 · 0 / 4</span></div>
+          <!-- 飞花闯关进行中的目标横幅 -->
+          <div class="active-level-banner hidden" id="active-level-banner">
+            <div class="banner-text">
+              <div class="banner-title" id="active-level-title"></div>
+              <div class="banner-goal" id="active-level-goal"></div>
+            </div>
+            <button class="btn btn-outline btn-sm" id="btn-exit-active-level">退出关卡</button>
+          </div>
+
+          <div class="panel-header">
+            <div class="action-buttons">
+              <button id="btn-random-start" class="btn btn-secondary">
+                <span aria-hidden="true">⤨</span> 随机起句
+              </button>
+              <button id="btn-reset-poem" class="btn btn-outline">
+                <span aria-hidden="true">↺</span> 重置
+              </button>
+            </div>
+          </div>
+
+          <!-- 4 句绝句插槽 -->
+          <div class="quatrain-slots" id="quatrain-slots">
+            <!-- 槽位 1 -->
+            <div class="line-slot empty" data-slot-index="0">
+              <div class="slot-number">壹</div>
+              <div class="slot-main">
+                <div class="slot-text-placeholder">寻一句心动，作为故事的开篇</div>
+              </div>
+              <div class="slot-badge">未选</div>
+            </div>
+
+            <!-- 槽位 2 -->
+            <div class="line-slot empty" data-slot-index="1">
+              <div class="slot-number">贰</div>
+              <div class="slot-main">
+                <div class="slot-text-placeholder">承接首句，让韵脚轻轻相和</div>
+              </div>
+              <div class="slot-badge">未选</div>
+            </div>
+
+            <!-- 槽位 3 -->
+            <div class="line-slot empty" data-slot-index="2">
+              <div class="slot-number">叁</div>
+              <div class="slot-main">
+                <div class="slot-text-placeholder">待诗意徐徐展开</div>
+              </div>
+              <div class="slot-badge">未选</div>
+            </div>
+
+            <!-- 槽位 4 -->
+            <div class="line-slot empty" data-slot-index="3">
+              <div class="slot-number">肆</div>
+              <div class="slot-main">
+                <div class="slot-text-placeholder">待诗意徐徐展开</div>
+              </div>
+              <div class="slot-badge">未选</div>
+            </div>
+          </div>
+
+          <!-- 平仄律动与合律分析面板 -->
+          <div class="song-paper-actions"><span class="song-completion-seal" aria-hidden="true">成篇</span><button class="btn btn-primary" id="song-finish-card" data-atelier-tab="card" disabled>制作诗牌 →</button></div>
+          <details class="song-feedback"><summary>格律检查 <span id="song-meter-status">待落笔</span></summary><div class="metrical-matrix-card">
+            <h3><span class="matrix-symbol" aria-hidden="true">◉</span> 格律回响 <span class="matrix-note">平仄 · 押韵 · 相粘</span></h3>
+            <div class="matrix-grid" id="matrix-grid">
+              <div class="matrix-empty">落下第一句，平仄与韵脚便在此回应。</div>
+            </div>
+            <div class="evaluation-box hidden" id="evaluation-box">
+              <div class="eval-header">
+                <span class="eval-rank" id="eval-rank">等待格律检查</span>
+                <span class="eval-score" id="eval-score">规则得分</span>
+              </div>
+              <ul class="eval-reports" id="eval-reports"></ul>
+            </div>
+          </div>
+          </details><details class="song-feedback"><summary>AI 诗意点评 <span>连贯 · 意象 · 余韵</span></summary><section class="ai-review"><div class="ai-section-heading"><div class="ai-inline-actions"><button class="btn btn-outline btn-sm" id="ai-evaluate" data-independent disabled>AI 成诗点评</button><button class="text-button" data-ai-cancel="evaluate" data-independent hidden>取消点评</button></div></div><p class="ai-hint">审美参考不影响格律或通关判定。</p><p id="ai-review-status" class="ai-status" role="status" aria-live="polite">集满四句后可点评。</p><div id="ai-review-result"></div></section></details>
+        </div>
+
+        <!-- 右侧：智能推荐与名句搜索池 -->
+        <div class="candidate-drawer" data-view="recommend">
+          <div class="drawer-header">
+            <h2 id="song-candidate-heading">为第一句寻诗</h2>
+            <span class="count-pill" id="candidate-count">0 条</span>
+            <p class="drawer-desc" id="drawer-desc">已依平仄律及平水韵智能排序</p>
+          </div>
+
+          <div class="drawer-tabs" aria-label="候选句方式">
+            <button class="drawer-tab" data-drawer="ai" aria-pressed="false">AI 推荐</button>
+            <button class="drawer-tab active" data-drawer="recommend" aria-pressed="true">合律候选</button>
+            <button class="drawer-tab" data-drawer="search" aria-pressed="false">自己找句</button>
+          </div>
+
+          <!-- 两列布局：左=AI 推荐名句池，右=搜索名句库 -->
+          <div class="drawer-columns">
+          <section class="ai-candidates col-ai"><div class="ai-section-heading"><h3>循着心意，寻下一句</h3><div class="ai-inline-actions"><button class="btn btn-primary btn-sm" id="ai-recommend" data-independent disabled>AI 诗意推荐</button><span class="ai-pick-toolbar" hidden><button class="btn btn-secondary btn-sm" id="ai-pick-best" data-independent disabled>选入 AI 首推</button></span><button class="text-button" data-ai-cancel="recommend" data-independent hidden>取消推荐</button></div></div><p class="ai-status" id="ai-recommend-status" role="status" aria-live="polite">可按所选韵部推荐，也可以先补充创作心意。</p><details id="ai-selection-notes" hidden></details><div id="ai-candidate-results"></div><button class="text-button" id="ai-swap" data-independent hidden>↻ AI 换一批</button></section>
+
+            <!-- 左列：AI 智能推荐名句池 -->
+            <div class="drawer-col col-recommend">
+              <div class="smart-placeholder" id="smart-placeholder">
+                <div class="empty-orbit" aria-hidden="true"><span>句</span></div>
+                <h3>从一句开始</h3>
+                <p>选择一句诗，开始集句。</p>
+                <button class="text-button" id="btn-empty-start">随机选一句 <span aria-hidden="true">→</span></button>
+              </div>
+              <div class="smart-recommendation-section hidden" id="smart-recommendation-section">
+                <div class="section-badge-title">
+                  <span class="smart-title-text">循韵而来</span>
+                  <span class="smart-title-right">
+                    <span class="recommend-tip" id="smart-step-tip">为你推荐下一句 (5句)</span>
+                    <span class="smart-batch-label" id="smart-batch-label"></span>
+                    <button class="btn btn-outline btn-sm btn-swap-smart" id="btn-swap-smart"
+                            title="另换一批符合标注格律的诗句">↻ 换一批</button>
+                  </span>
+                </div>
+                <div class="smart-five-grid" id="smart-five-grid">
+                  <!-- 动态注入 5 句推荐卡片 -->
+                </div>
+              </div>
+            </div>
+
+            <!-- 右列：搜索名句库 -->
+            <div class="drawer-col col-search">
+              <div class="dual-search-bar">
+                <div class="search-field">
+                  <label class="field-label" for="search-verse-input">按诗句 · 意象</label>
+                  <div class="search-input-wrapper">
+                    <input type="text" id="search-verse-input" placeholder="如: 明月、春风...">
+                    <button id="btn-verse-search" class="btn-search">搜索</button>
+                    <button id="btn-verse-clear" class="btn-clear hidden" aria-label="清空诗句搜索">×</button>
+                  </div>
+                </div>
+                <div class="search-field">
+                  <label class="field-label" for="search-poet-input">按诗人 · 篇名</label>
+                  <div class="search-input-wrapper">
+                    <input type="text" id="search-poet-input" placeholder="如: 王维、山居秋暝...">
+                    <button id="btn-poet-search" class="btn-search">搜索</button>
+                    <button id="btn-poet-clear" class="btn-clear hidden" aria-label="清空诗人搜索">×</button>
+                  </div>
+                </div>
+              </div>
+              <div class="search-suggestions"><span>试着寻：</span><button data-search="明月">明月</button><button data-search="春风">春风</button><button data-search="山水">山水</button></div>
+              <div class="candidate-list" id="candidate-list" aria-live="polite">
+                <!-- 动态生成候选卡片 -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+      </section>
+      </div></div>
+    </section>
+
+    <!-- ==================== 2. 飞花闯关模块 (Poetry Puzzle) ==================== -->
+    <section id="tab-puzzle" class="tab-content">
+      <div class="puzzle-container">
+        <header class="puzzle-banner workspace-page-heading"><h2>飞花闯关</h2></header>
+
+        <div class="puzzle-levels" id="puzzle-levels">
+          <!-- 动态渲染关卡 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 3. 水墨诗牌导出 (Xuan Paper Card) ==================== -->
+    <section id="tab-card" class="tab-content">
+      <header class="card-studio-heading workspace-page-heading"><h2>水墨诗牌</h2></header>
+      <div class="card-generator-layout">
+        <div class="card-controls">
+          <h2><span class="card-control-number">01</span> 选一张诗笺</h2>
+          <p id="card-collection-count">文美斋 · 6 款</p>
+          <div class="style-picker card-template-picker" aria-label="诗笺款式"></div><button class="card-collection-preview" id="view-selected-card">查看完整诗笺 ↓</button>
+          <h2><span class="card-control-number">02</span> 为诗题名</h2>
+
+          <div class="control-group">
+            <label for="card-title-input">诗作标题：</label>
+            <input type="text" id="card-title-input" value="集句·秋夜思" maxlength="20" placeholder="为这首诗题一个名字">
+          </div>
+
+
+
+          <div class="control-group"><label>纸幅比例</label><div class="format-picker" aria-label="纸幅比例"><button class="format-btn active" data-format="portrait" aria-pressed="true"><span aria-hidden="true">▯</span> 长笺 3:4</button><button class="format-btn" data-format="square" aria-pressed="false"><span aria-hidden="true">□</span> 斗方 1:1</button><button class="format-btn" data-format="wide" aria-pressed="false"><span aria-hidden="true">▭</span> 横笺 3:2</button></div></div>
+          <details class="card-refinement"><summary>纸色与字体</summary>
+          <div class="control-group">
+            <label>诗文字体：</label>
+            <div class="font-picker">
+              <button class="font-btn active" data-font="mashanzheng" style="font-family:'Ma Shan Zheng',cursive;">马善政行书</button>
+              <button class="font-btn" data-font="longcang" style="font-family:'Long Cang',cursive;">Long Cang 随性</button>
+              <button class="font-btn" data-font="zhimangxing" style="font-family:'Zhi Mang Xing',cursive;">志莽行书</button>
+              <button class="font-btn" data-font="liujianmaocao" style="font-family:'Liu Jian Mao Cao',cursive;">刘建毛草</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label>宣纸纸张底色：</label>
+            <div class="theme-picker">
+              <button class="theme-btn active" data-theme="xuan" style="background:#f5f3eb; color:#292e2b;">米白生宣</button>
+              <button class="theme-btn" data-theme="bamboo" style="background:#edf0e8; color:#28342d;">竹青冷宣</button>
+              <button class="theme-btn" data-theme="ink" style="background:#232b29; color:#efe8d5;">玄墨金笺</button>
+              <button class="theme-btn" data-theme="rose" style="background:#f5f1ed;color:#38312f">薄雪暖宣</button><button class="theme-btn" data-theme="porcelain" style="background:#f2f4f0;color:#314b63">月白熟宣</button><button class="theme-btn" data-theme="red" style="background:#2C1819; color:#E6C280;">朱砂紫檀</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label>文字排版方向：</label>
+            <div class="direction-picker">
+              <button class="dir-btn active" data-dir="vertical">传统竖排 (古典)</button>
+              <button class="dir-btn" data-dir="horizontal">现代横排 (简约)</button>
+            </div>
+          </div>
+          </details>
+          <div class="export-actions">
+            <button class="btn btn-export btn-block" id="btn-export-image">
+              收藏为高清图片 <span aria-hidden="true">↗</span>
+            </button>
+            <button class="btn btn-secondary btn-block" id="btn-copy-poem">
+              复制诗句与出处
+            </button>
+          </div>
+          <p class="card-export-state" id="card-export-state" role="status" aria-live="polite">导出保留完整纸幅；复制全诗可查看完整出处。</p>
+        </div>
+
+        <!-- 右侧卡片预览区 -->
+        <div class="card-preview-area">
+          <div class="card-preview-toolbar"><span><i class="live-dot"></i> 成品预览 <strong id="card-preview-name">朱栏花笺</strong></span><span id="card-example-badge">版式示意</span></div>
+          <div class="card-preview-stage" id="card-preview-stage"><div class="xuan-paper-card" id="xuan-card"></div></div>
+          <div class="card-preview-caption"><span id="card-output-size">1800 × 2400 PNG</span></div>
+          <p class="card-art-source">笺图：张兆祥《文美斋诗笺谱》／<a href="https://www.shuge.org/view/wen_mei_zhai_shi_jian_pu/" target="_blank" rel="noopener">书格 · CC BY 4.0</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 4. 诗词入门与平水韵速查 ==================== -->
+    <section id="tab-pingshui" class="tab-content">
+      <div class="pingshui-guide-layout">
+
+        <!-- 头部导览 banner -->
+        <header class="pingshui-banner workspace-page-heading"><h2>诗词入门</h2></header>
+
+        <div class="pingshui-grid guide-basics">
+
+          <article class="pingshui-card">
+            <div class="card-icon" aria-hidden="true">壹</div>
+            <h3>集句诗：旧句，也能有新意</h3>
+            <p>从前人的诗作中选取现成诗句，重新组织成一首诗，就是集句。句子各有来处，放在一起却要能表达新的心意。</p>
+            <p>选句时，除了合律，也试着读一遍：景物是否相接，情绪是否连贯，末句能否留下余味？本项目可以展开每句的出处，回看原诗语境。</p>
+            <div class="guide-reading"><span>延伸阅读</span><a href="https://dict.revised.moe.edu.tw/dictView.jsp?ID=88374&amp;la=0&amp;powerMode=0" target="_blank" rel="noopener noreferrer">《重编国语辞典》· 集句释义 <span aria-hidden="true">↗</span><span class="sr-only">（新标签页打开）</span></a></div>
+          </article>
+
+          <article class="pingshui-card">
+            <div class="card-icon" aria-hidden="true">贰</div>
+            <h3>五言与七言：看每句有几个字</h3>
+            <p>“言”在这里指字数：五言每句五字，七言每句七字，标点不计。它说明句子的长度，并不单独决定一首诗是绝句、律诗还是古体诗。</p>
+            <div class="guide-verse-example"><p><span>五言 · 5 字 · 王维《山居秋暝》</span>明月松间照</p><p><span>七言 · 7 字 · 杜甫《绝句》</span>两个黄鹂鸣翠柳</p></div>
+            <div class="guide-reading"><span>读一读原作</span><a href="https://www.gushiwen.cn/shiwens/default.aspx?tstr=%E4%BA%94%E8%A8%80%E7%BB%9D%E5%8F%A5" target="_blank" rel="noopener noreferrer">古文岛（原古诗文网）· 五言绝句选读 <span aria-hidden="true">↗</span><span class="sr-only">（新标签页打开）</span></a><a href="https://www.gushiwen.cn/shiwens/default.aspx?tstr=%E4%B8%83%E8%A8%80%E7%BB%9D%E5%8F%A5" target="_blank" rel="noopener noreferrer">古文岛（原古诗文网）· 七言绝句选读 <span aria-hidden="true">↗</span><span class="sr-only">（新标签页打开）</span></a></div>
+          </article>
+
+          <article class="pingshui-card guide-forms">
+            <div class="card-icon" aria-hidden="true">叁</div>
+            <h3>绝句与律诗：四句与八句</h3>
+            <p>近体诗讲究字数、平仄、押韵与粘对。常见的律绝是四句，普通律诗是八句；按通常规范，律诗的第 3、4 句（颔联）及第 5、6 句（颈联）还要对仗。</p>
+            <div class="guide-table-wrap"><table class="guide-form-table"><caption>四种常见近体诗的基本篇幅（不计标点）</caption><thead><tr><th scope="col">诗体</th><th scope="col">每句</th><th scope="col">全诗</th><th scope="col">总字数</th></tr></thead><tbody><tr><th scope="row">五言绝句</th><td>5 字</td><td>4 句</td><td>20 字</td></tr><tr><th scope="row">七言绝句</th><td>7 字</td><td>4 句</td><td>28 字</td></tr><tr><th scope="row">五言律诗</th><td>5 字</td><td>8 句</td><td>40 字</td></tr><tr><th scope="row">七言律诗</th><td>7 字</td><td>8 句</td><td>56 字</td></tr></tbody></table></div>
+            <p>对仗，是一联两句中相应词语在词性、结构等方面相对，如杜甫《绝句》的“两个黄鹂鸣翠柳，一行白鹭上青天”。律绝不要求每联都对仗。另有古绝、排律等形式，不能只凭句数判定是否合律。</p>
+            <p class="guide-project-note">在这里练习：目前支持五言、七言的四句平韵集句；八句律诗只作知识介绍。</p>
+            <div class="guide-reading guide-reading-inline"><span>延伸阅读</span><a href="https://dict.concised.moe.edu.tw/dictView.jsp?ID=24159&amp;la=0&amp;powerMode=0" target="_blank" rel="noopener noreferrer">《国语辞典简编本》· 绝句 <span aria-hidden="true">↗</span><span class="sr-only">（新标签页打开）</span></a><a href="https://dict.revised.moe.edu.tw/dictView.jsp?ID=67667&amp;word=%E5%BE%8B%E8%A9%A9" target="_blank" rel="noopener noreferrer">《重编国语辞典》· 律诗 <span aria-hidden="true">↗</span><span class="sr-only">（新标签页打开）</span></a></div>
+          </article>
+
+          <article class="pingshui-card">
+            <div class="card-icon" aria-hidden="true">肆</div>
+            <h3>平水韵：给韵脚找同伴</h3>
+            <p>平水韵是传统诗歌常用的韵部体系，按古音把字分为 106 韵：平声 30 韵、上声 29 韵、去声 30 韵、入声 17 韵。“上平”“下平”是平声的两卷，不是普通话的一、二声。</p>
+            <p>常见的平韵近体诗，偶数句押同一平声韵部，首句可入韵也可不入韵。例如“春、尘、人”同属上平十一真；现代读来相近的字，不一定属于同一古韵部。</p>
+            <div class="guide-reading"><span>查完整韵表与用字</span><a href="https://sou-yun.cn/QR.aspx" target="_blank" rel="noopener noreferrer">搜韵 · 平水韵总目与韵字查询 <span aria-hidden="true">↗</span><span class="sr-only">（新标签页打开）</span></a></div>
+          </article>
+
+          <article class="pingshui-card">
+            <div class="card-icon" aria-hidden="true">伍</div>
+            <h3>平仄：不能只听普通话</h3>
+            <p>传统四声分平、上、去、入，平声为平，上、去、入为仄。普通话已没有独立的入声调，所以不能直接拿今天的一、二声判定所有平声字。</p>
+            <p>例如“白、竹、国、月、雪”在传统声律中是入声，按仄声处理。多音字还要结合词义和原句判断。</p>
+            <details class="guide-advanced"><summary>再认识粘对与拗救</summary><p>“对”指一联上下句在关键节奏位置的平仄相对；“粘”指前一联对句与后一联出句在相应位置的平仄相粘。具体句式有允许的变化与拗救，不能机械地理解为每个字都必须相反或相同。</p><p>本项目按语料标注校验平韵绝句，入韵句须同韵；暂不判定首句借邻韵及其他特殊拗救。闯关另要求四句取自不同原诗，这属于玩法规则。</p></details>
+            <div class="guide-reading"><span>从平仄、韵到对仗</span><a href="https://www.sou-yun.cn/Courses.aspx" target="_blank" rel="noopener noreferrer">搜韵 · 诗词创作课程 <span aria-hidden="true">↗</span><span class="sr-only">（新标签页打开）</span></a><small>课程目录含基础格律微课，也有进阶专题，可按需选择。</small></div>
+          </article>
+        </div>
+
+        <!-- 平声三十韵部全览表 (上平十五韵 & 下平十五韵) -->
+        <details class="rhyme-table-section guide-rhyme-reference">
+          <summary>平水韵 · 平声三十韵速查 <span>常用例字与诗句</span></summary>
+          <p class="guide-reference-note">这里列出部分例字，便于初识韵部，不是完整字表。多音、多韵字须结合语境核对；完整字表可到 <a href="https://sou-yun.cn/QR.aspx" target="_blank" rel="noopener noreferrer">搜韵查询 <span aria-hidden="true">↗</span><span class="sr-only">（新标签页打开）</span></a>。</p>
+
+          <div class="rhyme-category-tabs">
+            <button class="rhyme-cat-btn active" data-rhyme-cat="shangping">上平十五韵 (一东至十五删)</button>
+            <button class="rhyme-cat-btn" data-rhyme-cat="xiaping">下平十五韵 (一先至十五咸)</button>
+          </div>
+
+          <!-- 韵部网格卡片 -->
+          <div class="rhyme-grid" id="rhyme-grid-shangping">
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">一东</div>
+              <div class="rhyme-words">东 同 童 空 风 红 公 中 终 翁 通 融 宫 雄</div>
+              <div class="rhyme-example">例：昨夜星辰昨夜风，画楼西畔桂堂东。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">二冬</div>
+              <div class="rhyme-words">冬 农 宗 钟 龙 松 重 凶 胸 庸 容 峰 蓉 踪</div>
+              <div class="rhyme-example">例：春风拂槛露华浓。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">三江</div>
+              <div class="rhyme-words">江 杠 庞 降 双 腔 撞 窗 邦</div>
+              <div class="rhyme-example">例：岘山临汉江。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">四支</div>
+              <div class="rhyme-words">支 知 枝 移 推 眉 吹 池 奇 姿 宜 时 垂 诗</div>
+              <div class="rhyme-example">例：竹外桃花三两枝，春江水暖鸭先知。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">五微</div>
+              <div class="rhyme-words">微 挥 飞 依 归 衣 稀 祈 非 几 围 妃 机</div>
+              <div class="rhyme-example">例：草盛豆苗稀，带月荷锄归。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">六鱼</div>
+              <div class="rhyme-words">鱼 渔 初 余 书 诸 居 如 虚 疏 除</div>
+              <div class="rhyme-example">例：渐行渐远渐无书。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">七虞</div>
+              <div class="rhyme-words">虞 呼 朱 珠 趋 扶 符 途 湖 孤 吾 吴 乌 图 无</div>
+              <div class="rhyme-example">例：平明送客楚山孤，一片冰心在玉壶。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">八齐</div>
+              <div class="rhyme-words">齐 黎 泥 溪 鸡 栖 西 迷 提 低 梯 妻</div>
+              <div class="rhyme-example">例：黄云城边乌欲栖。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">九佳</div>
+              <div class="rhyme-words">佳 排 淮 谐 怀 差 街 阶</div>
+              <div class="rhyme-example">例：楚江巫峡冰入怀。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">十灰</div>
+              <div class="rhyme-words">灰 开 来 回 杯 催 台 哀 陪 猜 苔 梅</div>
+              <div class="rhyme-example">例：葡萄美酒夜光杯，欲饮琵琶马上催。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">十一真</div>
+              <div class="rhyme-words">真 因 人 亲 春 身 尘 新 邻 巾 频 神 申</div>
+              <div class="rhyme-example">例：海内存知己，天涯若比邻。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">十二文</div>
+              <div class="rhyme-words">文 闻 云 群 军 君 分 欣 芬 纷 坟 熏</div>
+              <div class="rhyme-example">例：崔九堂前几度闻，落花时节又逢君。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">十三元</div>
+              <div class="rhyme-words">元 原 源 园 烦 繁 翻 门 村 存 论 昏</div>
+              <div class="rhyme-example">例：山重水复疑无路，柳暗花明又一村。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">十四寒</div>
+              <div class="rhyme-words">寒 看 刊 丹 单 安 难 餐 栏 残 干 官</div>
+              <div class="rhyme-example">例：带得春风入长安。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">十五删</div>
+              <div class="rhyme-words">删 山 间 还 关 颜 闲 攀 潺 湾 蛮</div>
+              <div class="rhyme-example">例：朝辞白帝彩云间，千里江陵一日还。</div>
+            </div>
+          </div>
+
+          <!-- 下平十五韵网格 -->
+          <div class="rhyme-grid hidden" id="rhyme-grid-xiaping">
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">一先</div>
+              <div class="rhyme-words">先 天 千 烟 前 连 棉 仙 年 弦 边 川 船 然</div>
+              <div class="rhyme-example">例：月落乌啼霜满天，江枫渔火对愁眠。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">二萧</div>
+              <div class="rhyme-words">萧 箫 桥 摇 遥 潮 霄 焦 昭 条 调</div>
+              <div class="rhyme-example">例：二十四桥明月夜，玉人何处教吹箫。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">三肴</div>
+              <div class="rhyme-words">肴 爻 巢 郊 咆 嘲 茅 胞 梢 敲</div>
+              <div class="rhyme-example">例：卷我屋上三重茅。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">四豪</div>
+              <div class="rhyme-words">豪 曹 桃 逃 皋 高 膏 劳 滔 袍 刀 操</div>
+              <div class="rhyme-example">例：碧玉妆成一树高，万条垂下绿丝绦。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">五歌</div>
+              <div class="rhyme-words">歌 罗 波 柯 和 俄 荷 何 多 磨 螺</div>
+              <div class="rhyme-example">例：鹅鹅鹅，曲项向天歌。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">六麻</div>
+              <div class="rhyme-words">麻 花 家 沙 斜 华 霞 鸦 遮 蛇 车 涯</div>
+              <div class="rhyme-example">例：远上寒山石径斜，白云生处有人家。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">七阳</div>
+              <div class="rhyme-words">阳 香 长 乡 光 霜 狂 床 凉 央 黄 庄 塘</div>
+              <div class="rhyme-example">例：举头望明月，低头思故乡。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">八庚</div>
+              <div class="rhyme-words">庚 明 清 声 成 情 行 惊 城 生 精 倾 平</div>
+              <div class="rhyme-example">例：野径云俱黑，江船火独明。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">九青</div>
+              <div class="rhyme-words">青 经 庭 停 屏 瓶 灵 玲 星 零</div>
+              <div class="rhyme-example">例：天阶夜色凉如水，卧看牵牛织女星。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">十蒸</div>
+              <div class="rhyme-words">蒸 陵 胜 升 冰 承 朋 膺 仍 澄 惩</div>
+              <div class="rhyme-example">例：落叶人何在，寒云路几层。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">十一尤</div>
+              <div class="rhyme-words">尤 游 留 秋 头 楼 流 舟 愁 休 牛 求 柔</div>
+              <div class="rhyme-example">例：明月松间照，清泉石上流。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">十二侵</div>
+              <div class="rhyme-words">侵 深 心 寻 林 阴 琴 吟 金 沉 音 今</div>
+              <div class="rhyme-example">例：城春草木深，恨别鸟惊心。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">十三覃</div>
+              <div class="rhyme-words">覃 潭 参 蚕 探 南 谈 甘 涵 憨</div>
+              <div class="rhyme-example">例：春来江水绿如蓝。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">十四盐</div>
+              <div class="rhyme-words">盐 帘 兼 尖 严 纤 沾 添 甜 蟾</div>
+              <div class="rhyme-example">例：却下水晶帘。</div>
+            </div>
+            <div class="rhyme-item-card">
+              <div class="rhyme-name">十五咸</div>
+              <div class="rhyme-words">咸 衫 凡 帆 衔 岩 喃 缄 馋</div>
+              <div class="rhyme-example">例：半作障泥半作帆。</div>
+            </div>
+          </div>
+
+        </details>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 全局页脚 -->
+  <footer class="app-footer">
+    <span>诗境集句</span><span>&copy; 2026</span>
+  </footer>

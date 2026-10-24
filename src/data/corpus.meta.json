@@ -1,0 +1,10 @@
+{
+  "format": "jiju-corpus",
+  "version": 2,
+  "count": 561809,
+  "sources": 71362,
+  "tagSets": 937,
+  "jsonBytes": 47824977,
+  "gzipBytes": 16436375,
+  "sha256": "a54423cfa7031d604708ae88f04a054c03535512301cfa5179ded3802b64ba30"
+}

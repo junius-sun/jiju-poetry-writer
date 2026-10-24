@@ -1,4 +1,10 @@
 node_modules/
+.local/
+.env.local
+.env
+.env.*.local
+.env.*
+!.env.example
 *.log
 .DS_Store
 Thumbs.db
@@ -12,3 +18,10 @@ scripts/tmp*
 
 # CloudStudio 部署产物
 build_publish/
+
+# 本地设计过程、浏览器截图；保留可复核的数据档案
+/reports/*
+!/reports/corpus-*.md
+!/reports/corpus-*.json
+!/reports/corpus-*.json.gz
+!/reports/corpus-source-backups/
