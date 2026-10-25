@@ -1,5 +1,5 @@
 import { HOME_POEM } from './homepage-poem.js';
-import { CARD_TEMPLATES, createCardModel, cardModelHtml, prepareCardStyle } from './poetry-card.js';
+import { CARD_TEMPLATES, createCardModel, cardModelHtml, prepareCardStyle } from './poetry-card.js?v=20261025-wmz9';
 
 const home = document.getElementById('site-home'), studio = document.getElementById('atelier-app');
 const appHashes = new Set(['#assembly','#assembly-compose','#assembly-direction','#creative-materials','#puzzle','#card','#pingshui']);
@@ -43,7 +43,7 @@ async function mountStudio() {
     await import('../input/creative-input.js');
     await import('../ai/assistant.js');
     await import('./effects.js');
-    await import('../bootstrap.js');
+    await import('../bootstrap.js?v=20261025-wmz9');
     if (!window.app) throw new Error('诗句暂未准备好，请刷新后重试。');
   })();
   return mounted;
