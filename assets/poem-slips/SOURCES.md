@@ -2,13 +2,13 @@
 
 - 作品：张兆祥绘《文美斋诗笺谱》（又名《百花诗笺谱》），天津文美斋，1911 年套色印本。
 - 原藏：美国国会图书馆，https://www.loc.gov/item/2014514535/ 。
-- 数字图与介绍来源：书格 https://www.shuge.org/view/wen_mei_zhai_shi_jian_pu/ 。该页页脚标注 CC BY 4.0，https://creativecommons.org/licenses/by/4.0/ 。署名在网站页脚与导出花笺底部保留。
+- 数字图与介绍来源：书格 https://www.shuge.org/view/wen_mei_zhai_shi_jian_pu/ 。该页页脚标注 CC BY 4.0，https://creativecommons.org/licenses/by/4.0/ 。署名在网站页脚、诗牌预览外侧与本说明中保留。
 - 下载原图：https://www.shuge.org/wp-content/uploads/2019/09/wen_mei_zhai_shi_jian_pu06-845x792.jpg ，845×792，105453 字节。
 - 保存：未改动的原图在 assets/poem-slips/collection/wmz06.jpg。wenmeizhai-art.js 是同一文件的 Base64 内联，不是重新绘制或生成的图片。
 - 使用变化：首页按版面裁切；诗牌从左页裁取菊花区域，深色纸笺以 SVG 滤镜转为金墨色。诗文与印章另以真实文字排版。原版题记、古人署名不作为当前集句作者。
 - 不把 Pinterest 转存图或 Behance 当作素材授权来源；Pinterest 仅作发现线索。
 
-## 新增五张古笺（十二款选集）
+## 公开花笺图版
 
 均为上述同一书格页面提供的原始 JPG，保存在 `collection/`，未编辑栅格文件。诗牌通过 SVG 精确裁取画面、去除旧纸底并柔化右缘；不把扫描页原文、古人署名用于用户作品。缩略图、完整预览和导出共享同一图像与排版。
 
@@ -19,10 +19,15 @@
 | wmz07.jpg | 海棠小笺 | https://www.shuge.org/wp-content/uploads/2019/09/wen_mei_zhai_shi_jian_pu07-1500x1398.jpg |
 | wmz08.jpg | 荷风莲笺 | https://www.shuge.org/wp-content/uploads/2019/09/wen_mei_zhai_shi_jian_pu08-1500x1387.jpg |
 | wmz09.jpg | 水仙岁朝 | https://www.shuge.org/wp-content/uploads/2019/09/wen_mei_zhai_shi_jian_pu09-1500x1385.jpg |
+| wmz10.jpg | 牵牛朝颜 | https://www.shuge.org/wp-content/uploads/2019/09/wen_mei_zhai_shi_jian_pu10-1500x1377.jpg |
+| wmz11.jpg | 黄花疏枝 | https://www.shuge.org/wp-content/uploads/2019/09/wen_mei_zhai_shi_jian_pu11-1500x1394.jpg |
+| wmz12.jpg | 红菊秋笺 | https://www.shuge.org/wp-content/uploads/2019/09/wen_mei_zhai_shi_jian_pu12-1500x1381.jpg |
+
+款式名称为本站为方便选款拟定，不是原书画题；“黄花疏枝”使用画面描述，不据图断定植物种名。
 
 ## 当前成品范围
 
-只保留上述六幅《文美斋诗笺谱》花笺。《北平笺谱》款式及其产品资源已移除，选款、首页、预览和导出均不再使用。
+当前提供书格介绍页公开预览中的全部九幅花笺，即图版 04–12。图版 01–03 为封面、书名或序文，不作为花笺款式；全书百幅不等于该页面均已公开展示。《北平笺谱》款式及其产品资源已移除，选款、首页、预览和导出均不再使用。
 
 成品画面仅保留标题、诗句与诗句出处；图像来源署名移到页面预览外侧及本说明。原标题、原书说明、营销语、集句者落款与产品印章均不叠加在成品上。原扫描绘画本身的小印记作为原作图像的一部分保留。
 

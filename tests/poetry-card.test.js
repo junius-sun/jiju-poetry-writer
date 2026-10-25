@@ -29,7 +29,7 @@ test('同一作者同一篇目合并出处，不吞掉待核状态；古音标�
   assert.ok(createCardModel({},input).elements.find(e=>e.kind==='source').text.endsWith('（待核）'));
 });
 
-test('六款花笺的三种纸幅、横竖排、五七言正文和出处均在纸幅内且分区',()=>{
+test('九款花笺的三种纸幅、横竖排、五七言正文和出处均在纸幅内且分区',()=>{
   for(const style of Object.keys(CARD_TEMPLATES))for(const format of Object.keys(CARD_FORMATS))for(const direction of ['vertical','horizontal'])for(const texts of [five,seven]){
     const model=createCardModel({style,format,direction,title:'春江月夜归乡题名测试二十字长标题之诗笺'},poem(texts));
     for(const e of model.elements){
@@ -59,7 +59,7 @@ test('古笺按需加载、并发复用、失败重试；未准备好不能导�
       assert.equal(model.artReady,true);assert.match(model.art,/href="data:image\/jpeg;base64,/);
       assert.ok(!model.art.includes('href="http'));snapshots.push(model.art);
     }
-    assert.equal(new Set(snapshots).size,6);
+    assert.equal(new Set(snapshots).size,Object.keys(CARD_TEMPLATES).length);
   }finally{globalThis.fetch=originalFetch;}
 });
 
@@ -70,8 +70,8 @@ test('横排逐句向下，竖排逐字向下、逐句向左',()=>{
   assert.ok(v[0].x>v[5].x&&v[5].x>v[10].x&&v[10].x>v[15].x);assert.ok(v[4].y>v[0].y);
 });
 
-test('只提供文美斋六款和四款书法字体；移除款式或文楷旧配置安全回退',()=>{
-  assert.deepEqual(Object.keys(CARD_TEMPLATES),['letter','peony','camellia','blossom','lotus','narcissus']);
+test('只提供文美斋九款和四款书法字体；移除款式或文楷旧配置安全回退',()=>{
+  assert.deepEqual(Object.keys(CARD_TEMPLATES),['letter','peony','camellia','blossom','lotus','narcissus','morningglory','yellowbranch','redchrysanthemum']);
   assert.equal(Object.keys(CARD_FONTS).length,4);assert.ok(!CARD_FONTS.wenkai);
   for(const preset of Object.values(CARD_TEMPLATES)){assert.ok(CARD_FONTS[preset.font]);assert.ok(!preset.scan&&!preset.artwork);}
   for(const config of [{style:'classic',font:'wenkai'},{style:'brocade'},{style:'__proto__',format:'constructor',font:'constructor',theme:'constructor'}]){

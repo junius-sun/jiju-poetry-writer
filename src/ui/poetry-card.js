@@ -10,6 +10,9 @@ export const CARD_TEMPLATES = {
   blossom: { name:'海棠小笺', subtitle:'疏枝繁花 · 春信入笺', theme:'xuan', font:'mashanzheng', group:'花笺', layout:'margin', image:'wmz07', crop:'90 310 520 930', imageHeight:1398 },
   lotus: { name:'荷风莲笺', subtitle:'碧叶红蕖 · 一纸清凉', theme:'bamboo', font:'zhimangxing', group:'花笺', layout:'margin', image:'wmz08', crop:'95 360 540 860', imageHeight:1387 },
   narcissus: { name:'水仙岁朝', subtitle:'凌波一枝 · 冬日清芬', theme:'xuan', font:'longcang', group:'花笺', layout:'margin', image:'wmz09', crop:'120 340 490 890', imageHeight:1385 },
+  morningglory: { name:'牵牛朝颜', subtitle:'红蓝相映 · 藤蔓舒展', theme:'porcelain', font:'mashanzheng', group:'花笺', layout:'margin', image:'wmz10', crop:'90 325 650 760', imageHeight:1377 },
+  yellowbranch: { name:'黄花疏枝', subtitle:'黄花细枝 · 疏影清供', theme:'xuan', font:'longcang', group:'花笺', layout:'margin', image:'wmz11', crop:'90 235 650 915', imageHeight:1394 },
+  redchrysanthemum: { name:'红菊秋笺', subtitle:'卷瓣红英 · 一枝秋色', theme:'rose', font:'zhimangxing', group:'花笺', layout:'margin', image:'wmz12', crop:'100 360 570 850', imageHeight:1381 },
 };
 export const CARD_FORMATS = {
   portrait: { width: 600, height: 800, name: '长笺 · 3:4' },
