@@ -1,5 +1,5 @@
 import { HOME_POEM } from './homepage-poem.js';
-import { CARD_TEMPLATES, createCardModel, cardModelHtml, prepareCardStyle } from './poetry-card.js?v=20261025-wmz9-2';
+import { CARD_TEMPLATES, createCardModel, cardModelHtml, prepareCardStyle } from './poetry-card.js?v=20261026-byok';
 
 const home = document.getElementById('site-home'), studio = document.getElementById('atelier-app');
 const appHashes = new Set(['#assembly','#assembly-compose','#assembly-direction','#creative-materials','#puzzle','#card','#pingshui']);
@@ -32,18 +32,18 @@ function loadMotionScript(file) {
 async function mountStudio() {
   if (mounted) return mounted;
   mounted = (async () => {
-    const response = await fetch(new URL('./workspace.html?v=20261025-wmz9-2',import.meta.url));
+    const response = await fetch(new URL('./workspace.html?v=20261026-byok',import.meta.url));
     if (!response.ok) throw new Error('书案页面未能加载。');
     const fragment = await response.text();
     const template = document.createElement('template'); template.innerHTML=fragment;
-    await Promise.all(['styles.css','src/ui/poetry-card.css','src/input/materials.css','src/ai/assistant.css','src/ui/atelier.css','src/ui/assembly-flow.css','src/ui/poetry-guide.css'].map(addStyles));
+    await Promise.all(['styles.css','src/ui/poetry-card.css','src/input/materials.css','src/ai/assistant.css?v=20261026-byok','src/ui/atelier.css','src/ui/assembly-flow.css','src/ui/poetry-guide.css'].map(addStyles));
     // Keep the shared control hierarchy after each feature stylesheet.
     document.head.append(document.getElementById('ui-clarity'));
     studio.replaceChildren(template.content.cloneNode(true));
     await import('../input/creative-input.js');
-    await import('../ai/assistant.js');
+    await import('../ai/assistant.js?v=20261026-byok');
     await import('./effects.js');
-    await import('../bootstrap.js?v=20261025-wmz9-2');
+    await import('../bootstrap.js?v=20261026-byok');
     if (!window.app) throw new Error('诗句暂未准备好，请刷新后重试。');
   })();
   return mounted;

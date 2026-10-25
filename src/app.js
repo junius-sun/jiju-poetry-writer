@@ -6,7 +6,7 @@ import { POETRY_DATABASE } from './data/poetry_db.js';
 import { MetricalEngine } from './engine/metrical.js';
 import { PING_RHYME_GROUPS, planPoemSettings } from './engine/rhymes.js';
 import { groupPoemLines, escapeHtml, sourceDetailHtml, qualityText, formatPoemWithSources } from './data/source_helpers.js';
-import { CARD_TEMPLATES, CARD_FONTS, prepareCardFont, createCardModel, cardModelHtml, renderCardCanvas, prepareCardStyle, cardPickerHtml, hydrateCardThumbnails } from './ui/poetry-card.js?v=20261025-wmz9-2';
+import { CARD_TEMPLATES, CARD_FONTS, prepareCardFont, createCardModel, cardModelHtml, renderCardCanvas, prepareCardStyle, cardPickerHtml, hydrateCardThumbnails } from './ui/poetry-card.js?v=20261026-byok';
 
 export class JijuPoetryApp {
   constructor() {

@@ -5,7 +5,7 @@ const previousStates = controls.map(control => control.disabled);
 controls.forEach(control => { control.disabled = true; });
 
 try {
-  const { JijuPoetryApp } = await import('./app.js?v=20261025-wmz9-2');
+  const { JijuPoetryApp } = await import('./app.js?v=20261026-byok');
   controls.forEach((control, index) => { control.disabled = previousStates[index]; });
   window.app = new JijuPoetryApp();
   document.dispatchEvent(new CustomEvent('poetry:ready'));

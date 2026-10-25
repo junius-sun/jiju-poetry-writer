@@ -307,14 +307,14 @@ test('成功结果缓存，变更素材重新请求，回显密钥自动隐藏',
 });
 
 test('取消会中断上游调用且不写缓存，并限制并发数', async () => {
-  let pending = 0;
+  let pending = 0;const started=Promise.withResolvers();
   const ai = service((_, request) => new Promise((resolve, reject) => {
-    pending++; request.signal.addEventListener('abort', () => reject(request.signal.reason), { once: true });
+    pending++;if(pending===2)started.resolve(); request.signal.addEventListener('abort', () => reject(request.signal.reason), { once: true });
   }));
   const c1 = new AbortController(), c2 = new AbortController();
   const p1 = ai.run('analyze', { context: { instructions: '甲' } }, { signal: c1.signal });
   const p2 = ai.run('analyze', { context: { instructions: '乙' } }, { signal: c2.signal });
-  await new Promise(resolve => setImmediate(resolve)); assert.equal(pending, 2);
+  await started.promise; assert.equal(pending, 2);
   await assert.rejects(ai.run('test'), error => error.status === 429);
   c1.abort(); c2.abort(); await assert.rejects(p1, error => error.status === 499); await assert.rejects(p2, error => error.status === 499);
 });

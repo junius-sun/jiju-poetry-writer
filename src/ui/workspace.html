@@ -87,30 +87,31 @@
       <section class="ai-workbench" aria-labelledby="ai-heading">
         <div class="ai-section-heading"><div><span class="eyebrow">A POETIC COMPANION</span><h2 id="ai-heading">AI 选句</h2></div><span id="ai-model-label">等待配置</span></div>
         <details class="ai-settings" id="ai-settings">
-          <summary>配置 AI 模型</summary>
+          <summary>连接 AI · 填写 Key</summary>
           <form id="ai-config-form">
-            <p class="ai-hint">填写兼容 OpenAI 的 API 地址与模型。</p>
-            <div class="ai-config-grid">
-              <label>API 根地址<input name="baseUrl" type="url" data-independent required placeholder="https://api.openai.com/v1"></label>
+            <p class="ai-hint">选择服务，粘贴自己的 API Key，即可连接。</p>
+            <div class="ai-config-grid ai-quick-connect">
+              <label>模型服务<select name="provider" data-independent><option value="openrouter">OpenRouter · 自动选择可用模型</option><option value="openai">OpenAI</option><option value="custom">自定义兼容服务</option></select></label>
+              <label>API Key<input name="apiKey" type="password" data-independent autocomplete="off" spellcheck="false" placeholder="粘贴该服务的 API Key"></label>
+            </div>
+            <p id="ai-provider-note" class="ai-hint">地址与模型已预设，无需另外填写；可用额度由服务方决定。</p>
+            <details class="ai-advanced" id="ai-advanced"><summary>高级设置（通常不用改）</summary><div class="ai-config-grid">
+              <label id="ai-mode-field">连接方式<select name="connectionMode" data-independent><option value="browser">浏览器直连 · Key 仅当前页面使用</option><option value="local">本机代理 · 使用本地服务</option></select></label>
+              <label>API 根地址<input name="baseUrl" type="url" data-independent required placeholder="https://example.com/v1"></label>
               <label>文字模型<input name="model" data-independent required placeholder="填写服务提供的模型名称"></label>
               <label>图片模型（可选）<input name="visionModel" data-independent placeholder="留空使用文字模型"></label>
-              <label>API 密钥<input name="apiKey" type="password" data-independent autocomplete="off" spellcheck="false" placeholder="暂时可留空"></label>
-            </div>
-            <label class="ai-checkbox"><input name="vision" type="checkbox" data-independent>启用图片输入（模型须支持视觉）</label>
-            <details class="ai-advanced"><summary>接口兼容选项</summary><div class="ai-config-grid">
-              <label>结构化输出<select name="outputMode"><option value="schema">JSON Schema（严格）</option><option value="json">JSON Object（兼容）</option></select></label>
-              <label>输出长度参数<select name="tokenField"><option value="max_completion_tokens">max_completion_tokens</option><option value="max_tokens">max_tokens（旧接口）</option></select></label>
-              <label>模型等待时间（秒）<input name="timeoutSeconds" type="number" min="30" max="300" step="1" value="120" data-independent required></label>
-              <label>思考模式<select name="thinkingMode"><option value="auto">自动（豆包 Seed 2 系列优先快速响应）</option><option value="disabled">关闭深度思考（豆包 / OpenRouter）</option><option value="enabled">启用深度思考（较慢）</option></select></label>
-            </div><p class="ai-hint">默认等待 120 秒，可设为 30–300 秒。自动模式下，豆包 Seed 2 系列关闭深度思考，其余模型沿用服务默认策略；深度思考会增加耗时。</p></details>
-            <p class="ai-hint" id="ai-key-note">密钥保存在本机服务端，不写入浏览器缓存或代码。留空会保留已存密钥。</p>
-            <div class="ai-actions"><button class="btn btn-primary" type="submit" data-independent id="ai-save-config">保存配置</button><button class="btn btn-outline" type="button" data-independent id="ai-test">测试连接</button><button class="text-button" type="button" data-independent data-ai-cancel="test" hidden>取消测试</button><button class="text-button" type="button" data-independent id="ai-clear-key">移除密钥</button></div>
+              <label>结构化输出<select name="outputMode" data-independent><option value="schema">严格 JSON</option><option value="json">兼容 JSON</option></select></label>
+              <label>输出长度参数<select name="tokenField" data-independent><option value="max_completion_tokens">max_completion_tokens</option><option value="max_tokens">max_tokens</option></select></label>
+              <label>等待时间（秒）<input name="timeoutSeconds" type="number" min="30" max="300" step="1" value="120" data-independent required></label>
+            </div><label class="ai-checkbox"><input name="vision" type="checkbox" data-independent>允许图片输入（模型须支持视觉）</label></details>
+            <p class="ai-hint" id="ai-key-note">Key 仅保留在当前页面内存中，不上传本站、不写入浏览器存储。请求直接发送至所选服务；刷新后需重新输入。</p>
+            <div class="ai-actions"><button class="btn btn-primary" type="submit" data-independent id="ai-save-config">连接 AI</button><button class="btn btn-outline" type="button" data-independent id="ai-test" hidden>重新测试</button><button class="text-button" type="button" data-independent data-ai-cancel="test" hidden>取消测试</button><button class="text-button" type="button" data-independent id="ai-clear-key" hidden>移除 Key</button></div>
           </form>
-          <p id="ai-config-status" class="ai-status" role="status" aria-live="polite">正在读取配置…</p>
+          <p id="ai-config-status" class="ai-status" role="status" aria-live="polite">选择服务并填写 API Key。</p>
         </details>
         <button class="btn btn-outline btn-sm" id="ai-reconnect" data-independent type="button" hidden>重新连接</button>
         <div id="ai-activity" class="ai-inline-actions" role="status" hidden><span id="ai-activity-text" class="ai-hint"></span><button class="text-button" id="ai-cancel-current" type="button" data-independent>取消当前任务</button></div>
-        <div class="ai-direction-heading"><div><p class="ai-hint">按心意与韵部推荐诗句。点击后，素材会发送至已配置的模型服务。</p></div><div class="ai-inline-actions"><button class="btn btn-primary" id="ai-analyze" data-independent disabled>AI 推荐诗句</button><button class="text-button" data-ai-cancel="recommend" data-independent hidden>取消推荐</button></div></div>
+        <div class="ai-direction-heading"><div><p class="ai-hint">按心意与韵部推荐诗句。点击后，素材会发送至你选择的模型服务。</p></div><div class="ai-inline-actions"><button class="btn btn-primary" id="ai-analyze" data-independent disabled>AI 推荐诗句</button><button class="text-button" data-ai-cancel="recommend" data-independent hidden>取消推荐</button></div></div>
         <p class="ai-status" id="ai-analysis-status" role="status" aria-live="polite">配置模型并保存素材后，即可开始。</p>
         <div id="ai-analysis" hidden><label class="ai-brief-label" for="ai-brief">创作方向 <span>可以修改，后续推荐会采用你的修改</span></label><textarea id="ai-brief" maxlength="6000" rows="3" placeholder="AI 将在这里整理创作方向"></textarea><div id="ai-analysis-details"></div></div>
       </section>

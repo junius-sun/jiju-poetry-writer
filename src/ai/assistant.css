@@ -60,3 +60,9 @@
   .ai-ratings { grid-template-columns: 1fr 1fr; }
   .ai-settings > summary span { display: block; margin: 6px 0 0 15px; }
 }
+
+/* A two-field default; compatibility settings stay folded. */
++.ai-quick-connect select,.ai-quick-connect input{min-height:46px}
++.ai-advanced>summary{min-height:44px;padding:10px 12px;border:1px solid var(--control-line,#b9af9f);border-radius:6px;background:var(--control-paper,#fffdf8);color:var(--control-ink,#292a25)}
++#ai-mode-field[hidden]{display:none!important}
++

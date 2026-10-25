@@ -11,7 +11,7 @@
     "fetch:sources": "node scripts/fetch_source_snapshot.js",
     "data:quality": "node --max-old-space-size=4096 scripts/improve_corpus_quality.js",
     "data:single-source": "node --max-old-space-size=4096 scripts/canonicalize_corpus.js",
-    "test": "node --max-old-space-size=4096 --test --test-concurrency=1 tests/metrical.test.js tests/corpus.test.js tests/source-quality.test.js tests/materials.test.js tests/ai.test.js tests/poetry-card.test.js",
+    "test": "node --max-old-space-size=4096 --test --test-concurrency=1 tests/metrical.test.js tests/corpus.test.js tests/source-quality.test.js tests/materials.test.js tests/ai.test.js tests/browser-ai.test.js tests/poetry-card.test.js",
     "test:smoke": "node --max-old-space-size=4096 scripts/smoke_test.js"
   },
   "dependencies": {

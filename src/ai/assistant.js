@@ -1,5 +1,6 @@
 import { escapeHtml as esc, sourceDetailHtml, qualityText } from '../data/source_helpers.js';
 import { clientTimeoutMs, DEFAULT_MODEL_TIMEOUT_SECONDS } from './protocol.js';
+import { createBrowserAiClient, PROVIDERS } from './browser-client.js?v=20261026-byok';
 
 export class LocalServiceError extends Error {
   constructor() { super('本机 AI 服务未连接。请双击项目中的「启动诗境.cmd」，再点击「重新连接」；已保存的密钥无需重填。'); this.name = 'LocalServiceError'; }
@@ -40,6 +41,13 @@ export class PoetryAssistant {
     this.configured = false; this.available = false; this.busy = ''; this.revision = 0;
     this.analysis = null; this.excluded = []; this.signature = ''; this.managed = [];
     this.timeoutSeconds = DEFAULT_MODEL_TIMEOUT_SECONDS; this.waitTimer = null; this.pendingStatusId = null;
+    this.connectionMode='browser';
+    this.browserClient=createBrowserAiClient({getCorpus:async()=>{
+      const database=window.app?.engine?.database;
+      if(!database?.length) throw new Error('诗句尚未加载完成，请稍候。');
+      return database;
+    }});
+    this.el('ai-mode-field').hidden=!['localhost','127.0.0.1','[::1]'].includes(location.hostname);
     this.bind(); this.refresh(); void this.loadStatus();
   }
   el(id) { return document.getElementById(id); }
@@ -79,12 +87,13 @@ export class PoetryAssistant {
       this.refresh();
     });
     this.form.addEventListener('submit', event => { event.preventDefault(); void this.saveConfig(); });
-    this.el('ai-test').addEventListener('click', () => void this.run('test', 'ai-config-status', async signal => {
-      const result = await this.request('test', {}, signal);
-      this.guard(signal);
-      this.message('ai-config-status', `${result.message} · ${result.model}`);
-      document.querySelector('[data-ai-connection]').textContent = '文字连接已验证';
-    }));
+    this.el('ai-test').addEventListener('click',()=>void this.testConnection());
+    this.form.elements.namedItem('provider').addEventListener('change',()=>this.selectProvider());
+    this.form.elements.namedItem('connectionMode').addEventListener('change',()=>{
+      this.cancel();this.browserClient.save({clearKey:true});this.clearAnalysis();this.clearPoetry();
+      this.connectionMode=this.form.elements.namedItem('connectionMode').value;
+      this.managed=[];this.configured=false;this.available=false;this.connecting=false;void this.loadStatus();
+    });
     this.el('ai-clear-key').addEventListener('click', () => void this.saveConfig(true));
     this.el('ai-analyze').addEventListener('click', () => void this.recommend(false, { fromSetup: true }));
     this.el('ai-pick-best').addEventListener('click', () => this.pickRecommendation(0));
@@ -115,35 +124,75 @@ export class PoetryAssistant {
     document.addEventListener('poetry:updated', changed);
     document.addEventListener('poetry:ready', changed);
   }
+  selectProvider() {
+    this.cancel();this.clearAnalysis();this.clearPoetry();
+    if(this.connectionMode==='browser') this.browserClient.save({clearKey:true});
+    const preset=PROVIDERS[this.form.elements.namedItem('provider').value]||PROVIDERS.custom;
+    for(const name of ['baseUrl','model','outputMode','tokenField','vision']) {
+      const input=this.form.elements.namedItem(name);
+      if(this.managed.includes(name)) continue;
+      if(name==='vision')input.checked=preset[name];else input.value=preset[name];
+    }
+    this.form.elements.namedItem('visionModel').value='';
+    this.form.elements.namedItem('apiKey').value='';this.form.elements.namedItem('apiKey').required=true;this.requireFreshKey=true;this.configured=false;
+    this.el('ai-advanced').open=this.form.elements.namedItem('provider').value==='custom';
+    this.providerNote();this.message('ai-config-status','填写此服务的 API Key，再点击「连接 AI」。');
+    document.querySelector('[data-ai-connection]').textContent='AI 待连接';
+    this.el('ai-model-label').textContent='等待填写 Key';this.refresh();
+  }
+  providerNote() {
+    const provider=this.form.elements.namedItem('provider').value;
+    this.el('ai-provider-note').textContent=provider==='custom'?'在高级设置填写兼容服务的地址和模型；服务需允许浏览器跨域调用。'
+      :provider==='openrouter'?'自动选择可用模型，无需填写地址与模型；可用额度和频率由服务方决定。'
+      :'地址与模型已预设，可在高级设置更换模型；调用使用你的服务账户额度。';
+  }
+  async testConnection() {
+    return this.run('test','ai-config-status',async signal=>{
+      const result=await this.request('test',{},signal);this.guard(signal);
+      this.message('ai-config-status',`${result.message} · ${result.model}`);
+      document.querySelector('[data-ai-connection]').textContent='AI 已连接';
+      this.el('ai-model-label').textContent='连接已验证';
+    });
+  }
   applyStatus(status) {
     this.available = true; this.configured = status.configured; this.managed = status.managedFields || [];
     this.timeoutSeconds = status.timeoutSeconds ?? DEFAULT_MODEL_TIMEOUT_SECONDS;
-    for (const name of ['baseUrl', 'model', 'visionModel', 'vision', 'outputMode', 'tokenField', 'timeoutSeconds', 'thinkingMode']) {
+    for (const name of ['baseUrl', 'model', 'visionModel', 'vision', 'outputMode', 'tokenField', 'timeoutSeconds']) {
       const input = this.form.elements.namedItem(name);
-      if (name === 'vision') input.checked = status[name]; else input.value = status[name] ?? (name === 'thinkingMode' ? 'auto' : this.timeoutSeconds);
+      if (name === 'vision') input.checked = status[name]; else input.value = status[name] ?? this.timeoutSeconds;
       input.disabled = this.managed.includes(name);
     }
     const key = this.form.elements.namedItem('apiKey'); key.value = '';
-    key.disabled = this.managed.includes('apiKey');
+    key.disabled = this.managed.includes('apiKey');key.required=!status.keyPresent&&!key.disabled;
     key.placeholder = status.keyPresent ? '已保存；留空保留，填写可替换' : '暂时可留空';
-    this.el('ai-key-note').textContent = this.managed.length
-      ? '部分字段由服务端环境变量管理，已锁定。密钥不会回传到浏览器。'
-      : '密钥保存在本机服务端，不写入浏览器缓存或代码。留空会保留已存密钥。';
-    document.querySelector('[data-ai-connection]').textContent = this.configured ? '模型已配置 · 可测试连接' : 'AI 未配置密钥';
-    this.el('ai-model-label').textContent = this.configured ? '文字模型已配置' : '等待接入模型';
-    this.el('ai-model-label').title = status.model || '';
+    const browser=this.connectionMode==='browser';
+    key.placeholder=status.keyPresent?'已连接；留空保留，填写可替换':'粘贴该服务的 API Key';
+    this.el('ai-key-note').textContent=browser
+      ?'Key 仅保留在当前页面内存中，不上传本站、不写入浏览器存储。请求直接发送至所选服务；刷新后需重新输入。'
+      :this.managed.length?'本机环境变量已管理部分配置。Key 不会回传到浏览器。':'Key 保存在本机代理配置中，不会回传到浏览器。';
+    const provider=Object.keys(PROVIDERS).find(id=>PROVIDERS[id].baseUrl===status.baseUrl)||'custom';
+    this.form.elements.namedItem('provider').value=provider;
+    this.form.elements.namedItem('provider').disabled=this.managed.includes('baseUrl')||this.managed.includes('model');
+    this.providerNote();
+    document.querySelector('[data-ai-connection]').textContent=this.configured?'Key 已填写 · 可测试连接':'AI 待连接 · 填写自己的 Key';
+    this.el('ai-model-label').textContent=this.configured?'已配置模型':'等待填写 Key';
+    this.el('ai-model-label').title=status.model||'';
     this.clearPoetry(); this.refresh();
   }
   async loadStatus() {
     if (this.connecting || this.busy) return;
+    const connectionVersion=(this.connectionVersion||0)+1;this.connectionVersion=connectionVersion;
     this.connecting = true; this.el('ai-reconnect').disabled = true;
     try {
-      const status = await aiRequest('status'); this.applyStatus(status);
-      this.message('ai-config-status', status.configured ? '配置已读取，可测试连接。' : '尚未填写密钥。可先保存配置，之后再启用 AI。');
+      const status = this.connectionMode==='browser'?this.browserClient.status():await aiRequest('status');
+      if(this.connectionVersion!==connectionVersion)return;
+      this.applyStatus(status);
+      this.message('ai-config-status', status.configured ? '配置已读取，可测试连接。' : '选择服务，填写 API Key 后点击「连接 AI」。');
     } catch (error) {
+      if(this.connectionVersion!==connectionVersion)return;
       this.markOffline();
       this.message('ai-config-status', error.message || '无法读取配置，请检查本地服务。', true);
-    } finally { this.connecting = false; this.refresh(); }
+    } finally { if(this.connectionVersion===connectionVersion){this.connecting = false; this.refresh();} }
   }
   markOffline() {
     this.available = false;
@@ -152,22 +201,26 @@ export class PoetryAssistant {
   }
   async saveConfig(clearKey = false) {
     if (!this.available || this.busy) return;
+    if(!clearKey&&this.requireFreshKey&&!this.form.elements.namedItem('apiKey').value.trim()) {this.message('ai-config-status','切换服务后，请填写此服务自己的 API Key。',true);return;}
+    let saved=false;
     this.cancel(); this.busy = 'config'; this.refresh();
-    this.message('ai-config-status', '正在保存配置…');
+    this.message('ai-config-status', clearKey?'正在移除 Key…':'正在准备连接…');
     try {
       const payload = clearKey ? { clearKey: true } : {};
       if (!clearKey) {
-        for (const name of ['baseUrl', 'model', 'visionModel', 'vision', 'apiKey', 'outputMode', 'tokenField', 'timeoutSeconds', 'thinkingMode']) {
+        for (const name of ['baseUrl', 'model', 'visionModel', 'vision', 'apiKey', 'outputMode', 'tokenField', 'timeoutSeconds']) {
           if (this.managed.includes(name)) continue;
           const input = this.form.elements.namedItem(name);
           payload[name] = name === 'vision' ? input.checked : name === 'timeoutSeconds' ? Number(input.value) : input.value.trim();
         }
       }
-      const status = await aiRequest('config', payload);
+      const status = this.connectionMode==='browser'?this.browserClient.save(payload):await aiRequest('config', payload);
+      saved=true;this.requireFreshKey=false;
       this.clearAnalysis(); this.clearPoetry(); this.applyStatus(status);
-      this.message('ai-config-status', clearKey ? '本机保存的密钥已移除。' : status.configured ? '配置已保存。点击测试连接确认接口可用。' : '地址和模型已保存，待填写密钥后启用 AI。');
+      this.message('ai-config-status', clearKey ? 'Key 已移除，当前页面不再保留此连接。' : status.configured ? '准备测试连接…' : '地址和模型已保存，待填写 Key 后连接。');
     } catch (error) { if (error instanceof LocalServiceError) this.markOffline(); this.message('ai-config-status', error.message, true); }
     finally { this.form.elements.namedItem('apiKey').value = ''; this.busy = ''; this.refresh(); }
+    if(saved&&!clearKey&&this.configured) await this.testConnection();
   }
   refresh() {
     const state = this.state(), context = window.creativeInput?.getContext();
@@ -179,6 +232,8 @@ export class PoetryAssistant {
     this.el('ai-activity-text').textContent = this.busy ? `${labels[this.busy] || '保存配置'}进行中 · ${Math.floor((Date.now() - this.requestStarted) / 1000)} 秒。完成后自动恢复按钮。` : '';
     this.el('ai-save-config').disabled = !this.available || Boolean(this.busy);
     this.el('ai-test').disabled = !enabled;
+    this.el('ai-test').hidden=!this.configured;this.el('ai-clear-key').hidden=!this.configured;
+    this.el('ai-save-config').textContent=this.busy==='test'?'正在连接…':this.configured?'更新连接':'连接 AI';
     this.el('ai-clear-key').disabled = !enabled || this.managed.includes('apiKey');
     this.el('ai-analyze').disabled = !enabled || !state || state.lineIds.length >= 4;
     this.el('ai-recommend').disabled = !enabled || !state || state.lineIds.length >= 4;
@@ -186,7 +241,7 @@ export class PoetryAssistant {
     this.el('ai-pick-best').parentElement.hidden = !this.recommendations?.length;
     this.el('ai-swap').disabled = this.el('ai-recommend').disabled;
     this.el('ai-evaluate').disabled = !enabled || state?.lineIds.length !== 4;
-    const blocked = !this.available ? '请先重新连接本机服务。' : !this.configured ? '请先保存模型配置及密钥。' : this.busy ? '已有 AI 任务进行中，可在上方取消。' : '';
+    const blocked = !this.available ? '请先重新连接本机服务。' : !this.configured ? '请先填写自己的 API Key 并连接。' : this.busy ? '已有 AI 任务进行中，可在上方取消。' : '';
     this.el('ai-analyze').title = blocked || '有素材则先理解再推荐；没有素材则按诗体和韵部推荐。';
     this.el('ai-recommend').title = blocked || (!state ? '语料正在加载。' : state.lineIds.length >= 4 ? '四句已完成，可进行点评。' : '按当前诗体、韵部与创作方向推荐合律候选');
     this.el('ai-evaluate').title = blocked || (state?.lineIds.length !== 4 ? '集满四句后即可点评。' : '点评当前四句诗');
@@ -199,7 +254,7 @@ export class PoetryAssistant {
     document.querySelectorAll('[data-ai-cancel]').forEach(button => { button.hidden = button.dataset.aiCancel !== this.busy; });
   }
   request(operation, payload, signal) {
-    return aiRequest(operation, payload, signal, fetch, clientTimeoutMs(operation, this.timeoutSeconds));
+    return this.connectionMode==='browser'?this.browserClient.run(operation,payload,{signal}):aiRequest(operation, payload, signal, fetch, clientTimeoutMs(operation, this.timeoutSeconds));
   }
   async run(operation, statusId, action) {
     if (!this.configured || this.busy) return;
