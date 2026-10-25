@@ -1,5 +1,5 @@
 import { HOME_POEM } from './homepage-poem.js';
-import { CARD_TEMPLATES, createCardModel, cardModelHtml, prepareCardStyle } from './poetry-card.js?v=20261025-wmz9';
+import { CARD_TEMPLATES, createCardModel, cardModelHtml, prepareCardStyle } from './poetry-card.js?v=20261025-wmz9-2';
 
 const home = document.getElementById('site-home'), studio = document.getElementById('atelier-app');
 const appHashes = new Set(['#assembly','#assembly-compose','#assembly-direction','#creative-materials','#puzzle','#card','#pingshui']);
@@ -32,7 +32,7 @@ function loadMotionScript(file) {
 async function mountStudio() {
   if (mounted) return mounted;
   mounted = (async () => {
-    const response = await fetch(new URL('./workspace.html',import.meta.url));
+    const response = await fetch(new URL('./workspace.html?v=20261025-wmz9-2',import.meta.url));
     if (!response.ok) throw new Error('书案页面未能加载。');
     const fragment = await response.text();
     const template = document.createElement('template'); template.innerHTML=fragment;
@@ -43,7 +43,7 @@ async function mountStudio() {
     await import('../input/creative-input.js');
     await import('../ai/assistant.js');
     await import('./effects.js');
-    await import('../bootstrap.js?v=20261025-wmz9');
+    await import('../bootstrap.js?v=20261025-wmz9-2');
     if (!window.app) throw new Error('诗句暂未准备好，请刷新后重试。');
   })();
   return mounted;

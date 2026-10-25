@@ -6,7 +6,7 @@ import { POETRY_DATABASE } from './data/poetry_db.js';
 import { MetricalEngine } from './engine/metrical.js';
 import { PING_RHYME_GROUPS, planPoemSettings } from './engine/rhymes.js';
 import { groupPoemLines, escapeHtml, sourceDetailHtml, qualityText, formatPoemWithSources } from './data/source_helpers.js';
-import { CARD_TEMPLATES, CARD_FONTS, prepareCardFont, createCardModel, cardModelHtml, renderCardCanvas, prepareCardStyle, cardPickerHtml, hydrateCardThumbnails } from './ui/poetry-card.js?v=20261025-wmz9';
+import { CARD_TEMPLATES, CARD_FONTS, prepareCardFont, createCardModel, cardModelHtml, renderCardCanvas, prepareCardStyle, cardPickerHtml, hydrateCardThumbnails } from './ui/poetry-card.js?v=20261025-wmz9-2';
 
 export class JijuPoetryApp {
   constructor() {
@@ -1044,6 +1044,7 @@ export class JijuPoetryApp {
   bindCardEvents() {
     const picker=document.querySelector('.card-template-picker');
     picker.innerHTML=cardPickerHtml();
+    document.getElementById('card-collection-count').textContent=`文美斋 · ${Object.keys(CARD_TEMPLATES).length} 款`;
     hydrateCardThumbnails(picker);
     document.querySelector('.font-picker').innerHTML=Object.entries(CARD_FONTS).map(([key,font])=>`<button class="font-btn" data-font="${key}" aria-label="${font.label}"><span style="font-family:${escapeHtml(font.family)}">山月清风</span><small>${font.label}</small></button>`).join('');
     document.getElementById('view-selected-card').addEventListener('click',()=>document.querySelector('.card-preview-area').scrollIntoView({block:'start',behavior:'smooth'}));
